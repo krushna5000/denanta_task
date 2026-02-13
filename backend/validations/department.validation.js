@@ -14,6 +14,5 @@ export const validateDepartment = (req, res, next) => {
       message: "depName required",
     });
   }
-
   next();
 };
