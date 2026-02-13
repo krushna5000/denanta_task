@@ -1,0 +1,180 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+.layout {
+  display: flex;
+}
+
+.sidebar {
+  width: 240px;
+  background: linear-gradient(#0f2c33, #254b56);
+  color: white;
+  height: 100vh;
+  padding: 20px;
+}
+
+.sidebar a {
+  display: block;
+  color: white;
+  text-decoration: none;
+  padding: 12px;
+  margin: 10px 0;
+  background: rgba(255,255,255,0.08);
+  border-radius: 8px;
+}
+
+.sidebar a:hover {
+  background: rgba(255,255,255,0.18);
+}
+
+.content {
+  flex: 1;
+  padding: 30px;
+  background: #f3f4f6;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.btn-add {
+  background: #a6e22e;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.search-box {
+  margin: 15px 0;
+  padding: 8px;
+  width: 320px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+/* ===== TABLE ===== */
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+thead {
+  background: #a6e22e;
+}
+
+th, td {
+  padding: 14px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+/* ===== MODAL ===== */
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+  /* blur + dark */
+  backdrop-filter: blur(10px);
+  background: rgba(0,0,0,0.35);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  z-index: 999;
+}
+
+
+.modal-card {
+  width: 520px;
+  max-height: 90vh;
+  overflow-y: auto;
+  background: white;
+  border-radius: 18px;
+  padding: 28px;
+
+  box-shadow: 0 25px 70px rgba(0,0,0,0.35);
+}
+
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.modal-header h2 {
+  margin: 0;
+}
+
+.modal-close {
+  cursor: pointer;
+  font-size: 22px;
+  border: none;
+  background: none;
+}
+
+/* ===== FORM ===== */
+
+.form-group {
+  margin-bottom: 18px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.form-input,
+.form-textarea {
+  width: 90%;
+  padding: 10px;
+  border-radius: 12px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+  margin-right: px;
+}
+
+.form-textarea {
+  height: 120px;
+  resize: vertical;
+}
+
+.form-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.btn-primary {
+  background: #a6e22e;
+  border: none;
+  padding: 12px 18px;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.btn-secondary {
+  background: #e5e7eb;
+  border: none;
+  padding: 12px 18px;
+  border-radius: 10px;
+  cursor: pointer;
+}
