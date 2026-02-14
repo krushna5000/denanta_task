@@ -5,6 +5,28 @@ import PlantForm from "../forms/PlantForm";
 export default function PlantsPage() {
   const [plants, setPlants] = useState([]);
   const [showForm, setShowForm] = useState(false);
+  const [editData, setEditData] = useState(null);
+
+  const handleEdit = (plant) => {
+    setEditData(plant);
+    setShowForm(true);
+  };
+
+  const handleDelete = async (id) => {
+    if (window.confirm("Are you sure you want to delete this plant?")) {
+      try {
+        await API.delete(`/plants/${id}`);
+        loadPlants();
+      } catch (error) {
+        alert("Error deleting plant: " + error.message);
+      }
+    }
+  };
+
+  const handleCloseForm = () => {
+    setShowForm(false);
+    setEditData(null);
+  };
 
   const loadPlants = async () => {
     const res = await API.get("/plants");
@@ -21,14 +43,13 @@ export default function PlantsPage() {
       <div className="page-header">
         <div>
           <h2>Plant Management</h2>
-          <p>Manage all plants here...</p>
         </div>
 
         <button
           className="btn-add"
           onClick={() => setShowForm(true)}
         >
-          + Create Plant
+           Add Plant
         </button>
       </div>
 
@@ -45,13 +66,14 @@ export default function PlantsPage() {
             <th>Plant Code</th>
             <th>Location</th>
             <th>Description</th>
+            <th>Actions</th>
           </tr>
         </thead>
 
         <tbody>
           {plants.length === 0 && (
             <tr>
-              <td colSpan="5">No plant found.</td>
+              <td colSpan="6">No plant found.</td>
             </tr>
           )}
 
@@ -62,6 +84,10 @@ export default function PlantsPage() {
               <td>{p.plantCode}</td>
               <td>{p.plantLocation}</td>
               <td>{p.description}</td>
+              <td>
+                <button className="btn-edit" onClick={() => handleEdit(p)} title="Edit"><i class="fa-solid fa-pen-to-square"></i></button>
+                <button className="btn-delete" onClick={() => handleDelete(p.id)} title="Delete"><i class="fa-solid fa-calendar-xmark"></i></button>
+              </td>
             </tr>
           ))}
         </tbody>
@@ -69,8 +95,9 @@ export default function PlantsPage() {
 
       {showForm && (
         <PlantForm
-          onClose={() => setShowForm(false)}
+          onClose={handleCloseForm}
           onSaved={loadPlants}
+          editData={editData}
         />
       )}
 

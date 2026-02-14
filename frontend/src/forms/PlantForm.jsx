@@ -3,7 +3,7 @@ import API from "../api/api";
 import { useEffect } from "react";
 
 
-export default function PlantForm({ onClose, onSaved }) {
+export default function PlantForm({ onClose, onSaved, editData }) {
   useEffect(() => {
   document.body.style.overflow = "hidden";
   return () => {
@@ -12,11 +12,13 @@ export default function PlantForm({ onClose, onSaved }) {
 }, []);
 
   const [form, setForm] = useState({
-    plantName: "",
-    plantCode: "",
-    plantLocation: "",
-    description: "",
+    plantName: editData?.plantName || "",
+    plantCode: editData?.plantCode || "",
+    plantLocation: editData?.plantLocation || "",
+    description: editData?.description || "",
   });
+
+  const isEdit = !!editData;
 
   const change = (k, v) => setForm({ ...form, [k]: v });
 
@@ -26,7 +28,12 @@ export default function PlantForm({ onClose, onSaved }) {
       return;
     }
 
-    await API.post("/plants", form);
+    if (isEdit) {
+      await API.put(`/plants/${editData.id}`, form);
+    } else {
+      await API.post("/plants", form);
+    }
+    
     onSaved();
     onClose();
   };
@@ -37,7 +44,7 @@ export default function PlantForm({ onClose, onSaved }) {
 
         {/* HEADER */}
         <div className="modal-header">
-          <h2>Create Plant</h2>
+          <h2>{isEdit ? "Edit Plant" : "Create Plant"}</h2>
           <button className="modal-close" onClick={onClose}>×</button>
         </div>
 
@@ -87,7 +94,7 @@ export default function PlantForm({ onClose, onSaved }) {
 
         <div className="form-actions">
           <button className="btn-primary" onClick={submit}>
-            Save Plant
+            {isEdit ? "Update Plant" : "Save Plant"}
           </button>
 
           <button className="btn-secondary" onClick={onClose}>

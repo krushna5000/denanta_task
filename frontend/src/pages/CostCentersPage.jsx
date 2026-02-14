@@ -5,10 +5,32 @@ import CostCenterForm from "../forms/CostCenterForm";
 export default function CostCentersPage() {
   const [rows, setRows] = useState([]);
   const [showForm, setShowForm] = useState(false);
+  const [editData, setEditData] = useState(null);
 
   const load = async () => {
     const res = await API.get("/cost-centers");
     setRows(res.data.data || []);
+  };
+
+  const handleEdit = (costCenter) => {
+    setEditData(costCenter);
+    setShowForm(true);
+  };
+
+  const handleDelete = async (id) => {
+    if (window.confirm("Are you sure you want to delete this cost center?")) {
+      try {
+        await API.delete(`/cost-centers/${id}`);
+        load();
+      } catch (error) {
+        alert("Error deleting cost center: " + error.message);
+      }
+    }
+  };
+
+  const handleCloseForm = () => {
+    setShowForm(false);
+    setEditData(null);
   };
 
   useEffect(() => {
@@ -21,11 +43,10 @@ export default function CostCentersPage() {
       <div className="page-header">
         <div>
           <h2>Cost Center Management</h2>
-          <p>Manage all cost centers here...</p>
         </div>
 
         <button className="btn-add" onClick={() => setShowForm(true)}>
-          + Create Cost Center
+           Create Cost Center
         </button>
       </div>
 
@@ -40,13 +61,14 @@ export default function CostCentersPage() {
             <th>Plant</th>
             <th>Department</th>
             <th>Description</th>
+            <th>Actions</th>
           </tr>
         </thead>
 
         <tbody>
           {rows.length === 0 && (
             <tr>
-              <td colSpan="6">No cost centers found.</td>
+              <td colSpan="7">No cost centers found.</td>
             </tr>
           )}
 
@@ -58,6 +80,10 @@ export default function CostCentersPage() {
               <td>{c.plant?.plantName}</td>
               <td>{c.department?.depName}</td>
               <td>{c.description}</td>
+              <td>
+                <button className="btn-edit" onClick={() => handleEdit(c)} title="Edit"><i class="fa-solid fa-pen-to-square"></i></button>
+                <button className="btn-delete" onClick={() => handleDelete(c.id)} title="Delete"><i class="fa-solid fa-delete-left"></i></button>
+              </td>
             </tr>
           ))}
         </tbody>
@@ -65,8 +91,9 @@ export default function CostCentersPage() {
 
       {showForm && (
         <CostCenterForm
-          onClose={() => setShowForm(false)}
+          onClose={handleCloseForm}
           onSaved={load}
+          editData={editData}
         />
       )}
 

@@ -1,23 +1,31 @@
 import { useEffect, useState } from "react";
 import API from "../api/api";
 
-export default function CostCenterForm({ onClose, onSaved }) {
+export default function CostCenterForm({ onClose, onSaved, editData }) {
   const [plants, setPlants] = useState([]);
   const [departments, setDepartments] = useState([]);
 
   const [form, setForm] = useState({
-    plantId: "",
-    depId: "",
-    costCenterName: "",
-    costCenterCode: "",
-    description: "",
+    plantId: editData?.plantId?.toString() || "",
+    depId: editData?.depId?.toString() || "",
+    costCenterName: editData?.costCenterName || "",
+    costCenterCode: editData?.costCenterCode || "",
+    description: editData?.description || "",
   });
+
+  const isEdit = !!editData;
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
     loadPlants();
     return () => (document.body.style.overflow = "auto");
   }, []);
+
+  useEffect(() => {
+    if (editData?.plantId) {
+      loadDepartments(editData.plantId);
+    }
+  }, [editData]);
 
   const loadPlants = async () => {
     const res = await API.get("/plants");
@@ -43,11 +51,17 @@ export default function CostCenterForm({ onClose, onSaved }) {
     if (!form.depId) return alert("Select Department");
     if (!form.costCenterName.trim()) return alert("Name required");
 
-    await API.post("/cost-centers", {
+    const payload = {
       ...form,
       plantId: Number(form.plantId),
       depId: Number(form.depId),
-    });
+    };
+
+    if (isEdit) {
+      await API.put(`/cost-centers/${editData.id}`, payload);
+    } else {
+      await API.post("/cost-centers", payload);
+    }
 
     onSaved();
     onClose();
@@ -58,7 +72,7 @@ export default function CostCenterForm({ onClose, onSaved }) {
       <div className="modal-card">
 
         <div className="modal-header">
-          <h2>Create Cost Center</h2>
+          <h2>{isEdit ? "Edit Cost Center" : "Create Cost Center"}</h2>
           <button className="modal-close" onClick={onClose}>×</button>
         </div>
 
@@ -129,7 +143,7 @@ export default function CostCenterForm({ onClose, onSaved }) {
 
         <div className="form-actions">
           <button className="btn-primary" onClick={submit}>
-            Save Cost Center
+            {isEdit ? "Update Cost Center" : "Save Cost Center"}
           </button>
           <button className="btn-secondary" onClick={onClose}>
             Cancel

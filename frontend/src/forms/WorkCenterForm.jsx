@@ -1,25 +1,39 @@
 import { useEffect, useState } from "react";
 import API from "../api/api";
 
-export default function WorkCenterForm({ onClose, onSaved }) {
+export default function WorkCenterForm({ onClose, onSaved, editData }) {
   const [plants, setPlants] = useState([]);
   const [departments, setDepartments] = useState([]);
   const [costCenters, setCostCenters] = useState([]);
 
   const [form, setForm] = useState({
-    plantId: "",
-    depId: "",
-    costCenterId: "",
-    workName: "",
-    workCode: "",
-    workDescription: "",
+    plantId: editData?.plantId?.toString() || "",
+    depId: editData?.depId?.toString() || "",
+    costCenterId: editData?.costCenterId?.toString() || "",
+    workName: editData?.workName || "",
+    workCode: editData?.workCode || "",
+    workDescription: editData?.workDescription || "",
   });
+
+  const isEdit = !!editData;
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
     loadPlants();
     return () => (document.body.style.overflow = "auto");
   }, []);
+
+  useEffect(() => {
+    if (editData?.plantId) {
+      loadDepartments(editData.plantId);
+    }
+  }, [editData]);
+
+  useEffect(() => {
+    if (editData?.depId) {
+      loadCostCenters(editData.depId);
+    }
+  }, [editData, departments]);
 
   const change = (k, v) => setForm({ ...form, [k]: v });
 
@@ -64,12 +78,18 @@ export default function WorkCenterForm({ onClose, onSaved }) {
     if (!form.costCenterId) return alert("Select Cost Center");
     if (!form.workName.trim()) return alert("Work name required");
 
-    await API.post("/work-centers", {
+    const payload = {
       ...form,
       plantId: Number(form.plantId),
       depId: Number(form.depId),
       costCenterId: Number(form.costCenterId),
-    });
+    };
+
+    if (isEdit) {
+      await API.put(`/work-centers/${editData.id}`, payload);
+    } else {
+      await API.post("/work-centers", payload);
+    }
 
     onSaved();
     onClose();
@@ -80,7 +100,7 @@ export default function WorkCenterForm({ onClose, onSaved }) {
       <div className="modal-card">
 
         <div className="modal-header">
-          <h2>Create Work Center</h2>
+          <h2>{isEdit ? "Edit Work Center" : "Create Work Center"}</h2>
           <button className="modal-close" onClick={onClose}>×</button>
         </div>
 
@@ -165,7 +185,7 @@ export default function WorkCenterForm({ onClose, onSaved }) {
 
         <div className="form-actions">
           <button className="btn-primary" onClick={submit}>
-            Save Work Center
+            {isEdit ? "Update Work Center" : "Save Work Center"}
           </button>
           <button className="btn-secondary" onClick={onClose}>
             Cancel
