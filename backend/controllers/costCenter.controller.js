@@ -37,3 +37,31 @@ export const deleteCostCenter = async (req, res) => {
   await costCenterService.deleteCostCenter(Number(req.params.id));
   res.json({ success: true });
 };
+
+export const getCostCentersByPlant = async (req, res) => {
+  try {
+    const { plantId } = req.query;
+    if (!plantId) {
+      return res.status(400).json({ success: false, message: "Plant ID is required" });
+    }
+    
+    const data = await costCenterService.getCostCentersByPlant(Number(plantId));
+    res.json({ success: true, data });
+  } catch (err) {
+    res.status(400).json({ success: false, message: err.message });
+  }
+};
+
+export const getCostCentersByDepartment = async (req, res) => {
+  try {
+    const { depId } = req.query;
+    if (!depId) {
+      return res.status(400).json({ success: false, message: "Department ID is required" });
+    }
+    
+    const data = await costCenterService.getCostCentersByDepartment(Number(depId));
+    res.json({ success: true, data });
+  } catch (err) {
+    res.status(400).json({ success: false, message: err.message });
+  }
+};

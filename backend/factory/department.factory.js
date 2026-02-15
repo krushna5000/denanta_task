@@ -39,3 +39,12 @@ export const updateDepartment = async (id, data) => {
 export const deleteDepartment = async (id) => {
   return db.delete(department).where(eq(department.id, id));
 };
+
+export const getDepartmentsByPlant = async (plantId) => {
+  return db.query.department.findMany({
+    where: eq(department.plantId, plantId),
+    with: {
+      plant: true,
+    },
+  });
+};

@@ -35,6 +35,18 @@ export default function WorkCenterForm({ onClose, onSaved, editData }) {
     }
   }, [editData, departments]);
 
+  useEffect(() => {
+    if (form.plantId) {
+      loadDepartments(form.plantId);
+    }
+  }, [form.plantId]);
+
+  useEffect(() => {
+    if (form.depId) {
+      loadCostCenters(form.depId);
+    }
+  }, [form.depId]);
+
   const change = (k, v) => setForm({ ...form, [k]: v });
 
   // -------- load data --------
@@ -45,15 +57,23 @@ export default function WorkCenterForm({ onClose, onSaved, editData }) {
   };
 
   const loadDepartments = async (plantId) => {
-    const res = await API.get("/departments");
-    const all = res.data.data || [];
-    setDepartments(all.filter(d => d.plantId === Number(plantId)));
+    try {
+      const res = await API.get(`/departments/by-plant?plantId=${plantId}`);
+      setDepartments(res.data.data || []);
+    } catch (err) {
+      console.error("Error loading departments:", err);
+      setDepartments([]);
+    }
   };
 
   const loadCostCenters = async (depId) => {
-    const res = await API.get("/cost-centers");
-    const all = res.data.data || [];
-    setCostCenters(all.filter(c => c.depId === Number(depId)));
+    try {
+      const res = await API.get(`/cost-centers/by-department?depId=${depId}`);
+      setCostCenters(res.data.data || []);
+    } catch (err) {
+      console.error("Error loading cost centers:", err);
+      setCostCenters([]);
+    }
   };
 
   // -------- handlers --------
@@ -85,14 +105,33 @@ export default function WorkCenterForm({ onClose, onSaved, editData }) {
       costCenterId: Number(form.costCenterId),
     };
 
-    if (isEdit) {
-      await API.put(`/work-centers/${editData.id}`, payload);
-    } else {
-      await API.post("/work-centers", payload);
-    }
+    try {
+      if (isEdit) {
+        await API.put(`/work-centers/${editData.id}`, payload);
+        showSuccessMessage("Work Center updated successfully");
+      } else {
+        await API.post("/work-centers", payload);
+        showSuccessMessage("Work Center created successfully");
+      }
 
-    onSaved();
-    onClose();
+      onSaved();
+      onClose();
+    } catch (error) {
+      console.error("Work Center save error:", error);
+      const errorMsg = error.response?.data?.message || error.response?.data?.error || error.message;
+      alert("Error saving work center: " + errorMsg);
+    }
+  };
+
+  const showSuccessMessage = (message) => {
+    const successDiv = document.createElement('div');
+    successDiv.textContent = message;
+    successDiv.className = 'success-message';
+    document.body.appendChild(successDiv);
+    
+    setTimeout(() => {
+      successDiv.remove();
+    }, 3000);
   };
 
   return (

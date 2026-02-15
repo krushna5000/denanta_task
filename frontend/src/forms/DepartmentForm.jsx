@@ -34,9 +34,13 @@ export default function DepartmentForm({ onClose, onSaved, editData }) {
   };
 
   const loadDepartments = async (plantId) => {
-    const res = await API.get("/departments");
-    const all = res.data.data || [];
-    setDepartments(all.filter(d => d.plantId === Number(plantId)));
+    try {
+      const res = await API.get(`/departments/by-plant?plantId=${plantId}`);
+      setDepartments(res.data.data || []);
+    } catch (err) {
+      console.error("Error loading departments:", err);
+      setDepartments([]);
+    }
   };
 
   const change = (k, v) => setForm({ ...form, [k]: v });
@@ -50,14 +54,32 @@ export default function DepartmentForm({ onClose, onSaved, editData }) {
       plantId: Number(form.plantId),
     };
 
-    if (isEdit) {
-      await API.put(`/departments/${editData.id}`, payload);
-    } else {
-      await API.post("/departments", payload);
-    }
+    try {
+      if (isEdit) {
+        await API.put(`/departments/${editData.id}`, payload);
+        showSuccessMessage("Department updated successfully");
+      } else {
+        await API.post("/departments", payload);
+        showSuccessMessage("Department created successfully");
+      }
 
-    onSaved();
-    onClose();
+      onSaved();
+      onClose();
+    } catch (error) {
+      const msg = error.response?.data?.message || error.response?.data?.error || error.message;
+      alert("Error saving department: " + msg);
+    }
+  };
+
+  const showSuccessMessage = (message) => {
+    const successDiv = document.createElement('div');
+    successDiv.textContent = message;
+    successDiv.className = 'success-message';
+    document.body.appendChild(successDiv);
+    
+    setTimeout(() => {
+      successDiv.remove();
+    }, 3000);
   };
 
   return (

@@ -7,25 +7,49 @@ export default function PlantsPage() {
   const [showForm, setShowForm] = useState(false);
   const [editData, setEditData] = useState(null);
 
+  const handleDelete = async (id) => {
+    if (window.confirm("Are you sure you want to delete this plant?")) {
+      try {
+        await API.delete(`/plants/${id}`);
+        showDeleteMessage("Plant deleted successfully");
+        loadPlants();
+      } catch (error) {
+        const msg = error.response?.data?.message || error.response?.data?.error || error.message;
+        alert("Error deleting plant: " + msg);
+      }
+    }
+  };
+
   const handleEdit = (plant) => {
     setEditData(plant);
     setShowForm(true);
   };
 
-  const handleDelete = async (id) => {
-    if (window.confirm("Are you sure you want to delete this plant?")) {
-      try {
-        await API.delete(`/plants/${id}`);
-        loadPlants();
-      } catch (error) {
-        alert("Error deleting plant: " + error.message);
-      }
-    }
-  };
-
   const handleCloseForm = () => {
     setShowForm(false);
     setEditData(null);
+  };
+
+  const showDeleteMessage = (message) => {
+    const deleteDiv = document.createElement('div');
+    deleteDiv.textContent = message;
+    deleteDiv.className = 'delete-message';
+    document.body.appendChild(deleteDiv);
+    
+    setTimeout(() => {
+      deleteDiv.remove();
+    }, 3000);
+  };
+
+  const showSuccessMessage = (message) => {
+    const successDiv = document.createElement('div');
+    successDiv.textContent = message;
+    successDiv.className = 'success-message';
+    document.body.appendChild(successDiv);
+    
+    setTimeout(() => {
+      successDiv.remove();
+    }, 3000);
   };
 
   const loadPlants = async () => {

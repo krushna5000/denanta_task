@@ -285,3 +285,33 @@ tbody tr:hover {
 .btn-delete:hover {
   background: #c0392b;
 }
+
+/* ===== SUCCESS MESSAGE ===== */
+
+.success-message {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: #28a745;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 4px;
+  z-index: 9999;
+  font-weight: 500;
+  box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+  font-size: 14px;
+}
+
+.delete-message {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: #e62424;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 4px;
+  z-index: 9999;
+  font-weight: 500;
+  box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+  font-size: 14px;
+}

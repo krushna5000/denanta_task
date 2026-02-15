@@ -37,3 +37,17 @@ export const deleteDepartment = async (req, res) => {
   await departmentService.deleteDepartment(Number(req.params.id));
   res.json({ success: true });
 };
+
+export const getDepartmentsByPlant = async (req, res) => {
+  try {
+    const { plantId } = req.query;
+    if (!plantId) {
+      return res.status(400).json({ success: false, message: "Plant ID is required" });
+    }
+    
+    const data = await departmentService.getDepartmentsByPlant(Number(plantId));
+    res.json({ success: true, data });
+  } catch (err) {
+    res.status(400).json({ success: false, message: err.message });
+  }
+};

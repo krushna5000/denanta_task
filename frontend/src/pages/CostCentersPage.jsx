@@ -21,9 +21,11 @@ export default function CostCentersPage() {
     if (window.confirm("Are you sure you want to delete this cost center?")) {
       try {
         await API.delete(`/cost-centers/${id}`);
+        showDeleteMessage("Cost Center deleted successfully");
         load();
       } catch (error) {
-        alert("Error deleting cost center: " + error.message);
+        const msg = error.response?.data?.message || error.response?.data?.error || error.message;
+        alert("Error deleting cost center: " + msg);
       }
     }
   };
@@ -31,6 +33,28 @@ export default function CostCentersPage() {
   const handleCloseForm = () => {
     setShowForm(false);
     setEditData(null);
+  };
+
+  const showDeleteMessage = (message) => {
+    const deleteDiv = document.createElement('div');
+    deleteDiv.textContent = message;
+    deleteDiv.className = 'delete-message';
+    document.body.appendChild(deleteDiv);
+    
+    setTimeout(() => {
+      deleteDiv.remove();
+    }, 3000);
+  };
+
+  const showSuccessMessage = (message) => {
+    const successDiv = document.createElement('div');
+    successDiv.textContent = message;
+    successDiv.className = 'success-message';
+    document.body.appendChild(successDiv);
+    
+    setTimeout(() => {
+      successDiv.remove();
+    }, 3000);
   };
 
   useEffect(() => {

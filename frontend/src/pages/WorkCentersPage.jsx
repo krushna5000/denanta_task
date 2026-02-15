@@ -21,9 +21,11 @@ export default function WorkCentersPage() {
     if (window.confirm("Are you sure you want to delete this work center?")) {
       try {
         await API.delete(`/work-centers/${id}`);
+        showDeleteMessage("Work Center deleted successfully");
         load();
       } catch (error) {
-        alert("Error deleting work center: " + error.message);
+        const msg = error.response?.data?.message || error.response?.data?.error || error.message;
+        alert("Error deleting work center: " + msg);
       }
     }
   };
@@ -31,6 +33,28 @@ export default function WorkCentersPage() {
   const handleCloseForm = () => {
     setShowForm(false);
     setEditData(null);
+  };
+
+  const showDeleteMessage = (message) => {
+    const deleteDiv = document.createElement('div');
+    deleteDiv.textContent = message;
+    deleteDiv.className = 'delete-message';
+    document.body.appendChild(deleteDiv);
+    
+    setTimeout(() => {
+      deleteDiv.remove();
+    }, 3000);
+  };
+
+  const showSuccessMessage = (message) => {
+    const successDiv = document.createElement('div');
+    successDiv.textContent = message;
+    successDiv.className = 'success-message';
+    document.body.appendChild(successDiv);
+    
+    setTimeout(() => {
+      successDiv.remove();
+    }, 3000);
   };
 
   useEffect(() => {

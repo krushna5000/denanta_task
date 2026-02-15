@@ -29,3 +29,13 @@ export const updateCostCenter = async (id, data) => {
 export const deleteCostCenter = async (id) => {
   return costCenterFactory.deleteCostCenter(id);
 };
+
+export const getCostCentersByPlant = async (plantId) => {
+  if (!plantId) throw new Error("Plant ID is required");
+  return costCenterFactory.getCostCentersByPlant(plantId);
+};
+
+export const getCostCentersByDepartment = async (depId) => {
+  if (!depId) throw new Error("Department ID is required");
+  return costCenterFactory.getCostCentersByDepartment(depId);
+};

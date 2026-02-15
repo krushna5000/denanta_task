@@ -27,3 +27,8 @@ export const updateDepartment = async (id, data) => {
 export const deleteDepartment = async (id) => {
   return departmentFactory.deleteDepartment(id);
 };
+
+export const getDepartmentsByPlant = async (plantId) => {
+  if (!plantId) throw new Error("Plant ID is required");
+  return departmentFactory.getDepartmentsByPlant(plantId);
+};

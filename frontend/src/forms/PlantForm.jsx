@@ -28,14 +28,32 @@ export default function PlantForm({ onClose, onSaved, editData }) {
       return;
     }
 
-    if (isEdit) {
-      await API.put(`/plants/${editData.id}`, form);
-    } else {
-      await API.post("/plants", form);
+    try {
+      if (isEdit) {
+        await API.put(`/plants/${editData.id}`, form);
+        showSuccessMessage("Plant updated successfully");
+      } else {
+        await API.post("/plants", form);
+        showSuccessMessage("Plant created successfully");
+      }
+      
+      onSaved();
+      onClose();
+    } catch (error) {
+      const msg = error.response?.data?.message || error.response?.data?.error || error.message;
+      alert("Error saving plant: " + msg);
     }
+  };
+
+  const showSuccessMessage = (message) => {
+    const successDiv = document.createElement('div');
+    successDiv.textContent = message;
+    successDiv.className = 'success-message';
+    document.body.appendChild(successDiv);
     
-    onSaved();
-    onClose();
+    setTimeout(() => {
+      successDiv.remove();
+    }, 3000);
   };
 
   return (

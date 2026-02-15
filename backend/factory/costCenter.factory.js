@@ -42,3 +42,23 @@ export const updateCostCenter = async (id, data) => {
 export const deleteCostCenter = async (id) => {
   return db.delete(costCenter).where(eq(costCenter.id, id));
 };
+
+export const getCostCentersByPlant = async (plantId) => {
+  return db.query.costCenter.findMany({
+    where: eq(costCenter.plantId, plantId),
+    with: {
+      plant: true,
+      department: true,
+    },
+  });
+};
+
+export const getCostCentersByDepartment = async (depId) => {
+  return db.query.costCenter.findMany({
+    where: eq(costCenter.depId, depId),
+    with: {
+      plant: true,
+      department: true,
+    },
+  });
+};
