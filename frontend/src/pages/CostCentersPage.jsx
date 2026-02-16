@@ -93,7 +93,6 @@ export default function CostCentersPage() {
       <table>
         <thead>
           <tr>
-            <th>ID</th>
             <th>Name</th>
             <th>Code</th>
             <th>Plant</th>
@@ -112,7 +111,6 @@ export default function CostCentersPage() {
 
           {rows.map(c => (
             <tr key={c.id}>
-              <td>{c.id}</td>
               <td>{c.costCenterName}</td>
               <td>{c.costCenterCode}</td>
               <td>{c.plant?.plantName}</td>

@@ -96,7 +96,6 @@ export default function DepartmentsPage() {
       <table>
         <thead>
           <tr>
-            <th>ID</th>
             <th>Department Name</th>
             <th>Code</th>
             <th>Plant</th>
@@ -114,7 +113,6 @@ export default function DepartmentsPage() {
 
           {departments.map(d => (
             <tr key={d.id}>
-              <td>{d.id}</td>
               <td>{d.depName}</td>
               <td>{d.depCode}</td>
               <td>{d.plant?.plantName}</td>

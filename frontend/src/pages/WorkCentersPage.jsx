@@ -93,7 +93,6 @@ export default function WorkCentersPage() {
       <table>
         <thead>
           <tr>
-            <th>ID</th>
             <th>Name</th>
             <th>Code</th>
             <th>Plant</th>
@@ -113,7 +112,6 @@ export default function WorkCentersPage() {
 
           {rows.map(w => (
             <tr key={w.id}>
-              <td>{w.id}</td>
               <td>{w.workName}</td>
               <td>{w.workCode}</td>
               <td>{w.plant?.plantName}</td>

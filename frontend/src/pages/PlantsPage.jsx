@@ -96,7 +96,6 @@ export default function PlantsPage() {
       <table>
         <thead>
           <tr>
-            <th>ID</th>
             <th>Plant Name</th>
             <th>Plant Code</th>
             <th>Location</th>
@@ -114,7 +113,6 @@ export default function PlantsPage() {
 
           {plants.map(p => (
             <tr key={p.id}>
-              <td>{p.id}</td>
               <td>{p.plantName}</td>
               <td>{p.plantCode}</td>
               <td>{p.plantLocation}</td>
