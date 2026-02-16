@@ -85,7 +85,7 @@ export default function WorkCentersPage() {
 
       <input
         className="search-box"
-        placeholder="Search by name or code..."
+        placeholder="Search Work Center..."
         value={searchTerm}
         onChange={handleSearch}
       />

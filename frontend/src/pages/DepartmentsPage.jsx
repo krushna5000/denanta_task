@@ -88,7 +88,7 @@ export default function DepartmentsPage() {
 
       <input
         className="search-box"
-        placeholder="Search by name or code..."
+        placeholder="Search Department..."
         value={searchTerm}
         onChange={handleSearch}
       />

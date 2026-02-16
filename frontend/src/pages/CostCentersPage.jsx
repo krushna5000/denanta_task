@@ -85,7 +85,7 @@ export default function CostCentersPage() {
 
       <input
         className="search-box"
-        placeholder="Search by name or code..."
+        placeholder="Search Cost Center..."
         value={searchTerm}
         onChange={handleSearch}
       />
