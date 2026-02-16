@@ -1,28 +1,44 @@
 import db from "../db/db_connection.js";
 import { costCenter } from "../db/schema.js";
-import { eq, ilike, or } from "drizzle-orm";
+import { eq, ilike, or, count } from "drizzle-orm";
 
 
-export const getCostCenters = async (search) => {
-  if (!search) {
-    return db.query.costCenter.findMany({
-      with: {
-        plant: true,
-        department: true,
-      },
-    });
-  }
+export const getCostCenters = async (search, page = 1, limit = 6) => {
+  const offset = (page - 1) * limit;
   
-  return db.query.costCenter.findMany({
-    where: or(
+  let whereCondition = undefined;
+  if (search) {
+    whereCondition = or(
       ilike(costCenter.costCenterName, `%${search}%`),
       ilike(costCenter.costCenterCode, `%${search}%`)
-    ),
+    );
+  }
+  
+  // Get total count for pagination
+  const totalCountResult = await db.select({ count: count() }).from(costCenter).where(whereCondition);
+  const totalCount = totalCountResult[0]?.count || 0;
+  
+  // Get paginated data
+  const data = await db.query.costCenter.findMany({
+    where: whereCondition,
     with: {
       plant: true,
       department: true,
     },
+    limit: limit,
+    offset: offset,
+    orderBy: (costCenter) => costCenter.id
   });
+  
+  return {
+    data,
+    pagination: {
+      page,
+      limit,
+      total: totalCount,
+      totalPages: Math.ceil(totalCount / limit)
+    }
+  };
 };
 
 

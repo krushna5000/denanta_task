@@ -12,8 +12,8 @@ export const createCostCenter = async (data) => {
   return result[0];
 };
 
-export const getAllCostCenters = async (search) => {
-  return costCenterFactory.getCostCenters(search);
+export const getAllCostCenters = async (search, page, limit) => {
+  return costCenterFactory.getCostCenters(search, page, limit);
 };
 
 export const getCostCenterById = async (id) => {

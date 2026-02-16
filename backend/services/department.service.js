@@ -10,8 +10,8 @@ export const createDepartment = async (data) => {
   return result[0];
 };
 
-export const getAllDepartments = async (search) => {
-  return departmentFactory.getDepartments(search);
+export const getAllDepartments = async (search, page, limit) => {
+  return departmentFactory.getDepartments(search, page, limit);
 };
 
 export const getDepartmentById = async (id) => {

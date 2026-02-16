@@ -1,30 +1,45 @@
 import db from "../db/db_connection.js";
 import { workCenter } from "../db/schema.js";
-import { eq, ilike, or } from "drizzle-orm";
+import { eq, ilike, or, count } from "drizzle-orm";
 
 
-export const getWorkCenters = async (search) => {
-  if (!search) {
-    return db.query.workCenter.findMany({
-      with: {
-        plant: true,
-        department: true,
-        costCenter: true,
-      },
-    });
-  }
+export const getWorkCenters = async (search, page = 1, limit = 6) => {
+  const offset = (page - 1) * limit;
   
-  return db.query.workCenter.findMany({
-    where: or(
+  let whereCondition = undefined;
+  if (search) {
+    whereCondition = or(
       ilike(workCenter.workName, `%${search}%`),
       ilike(workCenter.workCode, `%${search}%`)
-    ),
+    );
+  }
+  
+  // Get total count for pagination
+  const totalCountResult = await db.select({ count: count() }).from(workCenter).where(whereCondition);
+  const totalCount = totalCountResult[0]?.count || 0;
+  
+  // Get paginated data
+  const data = await db.query.workCenter.findMany({
+    where: whereCondition,
     with: {
       plant: true,
       department: true,
       costCenter: true,
     },
+    limit: limit,
+    offset: offset,
+    orderBy: (workCenter) => workCenter.id
   });
+  
+  return {
+    data,
+    pagination: {
+      page,
+      limit,
+      total: totalCount,
+      totalPages: Math.ceil(totalCount / limit)
+    }
+  };
 };
 
 

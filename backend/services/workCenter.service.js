@@ -13,8 +13,8 @@ export const createWorkCenter = async (data) => {
   return result[0];
 };
 
-export const getAllWorkCenters = async (search) => {
-  return workCenterFactory.getWorkCenters(search);
+export const getAllWorkCenters = async (search, page, limit) => {
+  return workCenterFactory.getWorkCenters(search, page, limit);
 };
 
 export const getWorkCenterById = async (id) => {

@@ -11,9 +11,12 @@ export const createPlant = async (req, res) => {
 
 export const getAllPlants = async (req, res) => {
   try {
-    const { search } = req.query;
-    const data = await plantService.getAllPlants(search);
-    res.json({ success: true, data });
+    const { search, page = 1, limit = 6 } = req.query;
+    const pageNum = parseInt(page) || 1;
+    const limitNum = parseInt(limit) || 4;
+    
+    const result = await plantService.getAllPlants(search, pageNum, limitNum);
+    res.json({ success: true, ...result });
   } catch {
     res.status(500).json({ success: false, message: "Fetch failed" });
   }

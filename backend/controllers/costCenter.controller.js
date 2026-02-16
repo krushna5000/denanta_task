@@ -11,9 +11,12 @@ export const createCostCenter = async (req, res) => {
 
 export const getAllCostCenters = async (req, res) => {
   try {
-    const { search } = req.query;
-    const data = await costCenterService.getAllCostCenters(search);
-    res.json({ success: true, data });
+    const { search, page = 1, limit = 6 } = req.query;
+    const pageNum = parseInt(page) || 1;
+    const limitNum = parseInt(limit) || 4;
+    
+    const result = await costCenterService.getAllCostCenters(search, pageNum, limitNum);
+    res.json({ success: true, ...result });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }

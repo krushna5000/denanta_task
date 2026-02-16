@@ -11,9 +11,12 @@ export const createDepartment = async (req, res) => {
 
 export const getAllDepartments = async (req, res) => {
   try {
-    const { search } = req.query;
-    const data = await departmentService.getAllDepartments(search);
-    res.json({ success: true, data });
+    const { search, page = 1, limit = 6 } = req.query;
+    const pageNum = parseInt(page) || 1;
+    const limitNum = parseInt(limit) || 6;
+    
+    const result = await departmentService.getAllDepartments(search, pageNum, limitNum);
+    res.json({ success: true, ...result });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }

@@ -1,26 +1,43 @@
 import db from "../db/db_connection.js";
 import { department } from "../db/schema.js";
-import { eq, ilike, or } from "drizzle-orm";
+import { eq, ilike, or, count } from "drizzle-orm";
 
 
-export const getDepartments = async (search) => {
-  if (!search) {
-    return db.query.department.findMany({
-      with: {
-        plant: true,
-      },
-    });
-  }
+export const getDepartments = async (search, page = 1, limit = 6) => {
+  const offset = (page - 1) * limit;
   
-  return db.query.department.findMany({
-    where: or(
+  let whereCondition = undefined;
+  if (search) {
+    whereCondition = or(
       ilike(department.depName, `%${search}%`),
       ilike(department.depCode, `%${search}%`)
-    ),
+    );
+  }
+  
+  // Get total count for pagination
+  const totalCountResult = await db.select({ count: count() }).from(department).where(whereCondition);
+  const totalCount = totalCountResult[0]?.count || 0;
+  
+  // Get paginated data
+  const data = await db.query.department.findMany({
+    where: whereCondition,
     with: {
       plant: true,
     },
+    limit: limit,
+    offset: offset,
+    orderBy: (department) => department.id
   });
+  
+  return {
+    data,
+    pagination: {
+      page,
+      limit,
+      total: totalCount,
+      totalPages: Math.ceil(totalCount / limit)
+    }
+  };
 };
 
 

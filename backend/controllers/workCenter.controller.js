@@ -11,9 +11,12 @@ export const createWorkCenter = async (req, res) => {
 
 export const getAllWorkCenters = async (req, res) => {
   try {
-    const { search } = req.query;
-    const data = await workCenterService.getAllWorkCenters(search);
-    res.json({ success: true, data });
+    const { search, page = 1, limit = 6 } = req.query;
+    const pageNum = parseInt(page) || 1;
+    const limitNum = parseInt(limit) || 6;
+    
+    const result = await workCenterService.getAllWorkCenters(search, pageNum, limitNum);
+    res.json({ success: true, ...result });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
