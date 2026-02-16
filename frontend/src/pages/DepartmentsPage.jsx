@@ -10,6 +10,7 @@ export default function DepartmentsPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [pagination, setPagination] = useState(null);
   const [limit, setLimit] = useState(6);
+  const [tablePage, setTablePage] = useState(1); // For table navigation
 
   const loadDepartments = async (search = "", page = 1, rowsPerPage = 6) => {
     const url = search ? `/departments?search=${encodeURIComponent(search)}&page=${page}&limit=${rowsPerPage}` : `/departments?page=${page}&limit=${rowsPerPage}`;
@@ -22,6 +23,7 @@ export default function DepartmentsPage() {
     const value = e.target.value;
     setSearchTerm(value);
     setCurrentPage(1); // Reset to first page when searching
+    setTablePage(1); // Reset table page when searching
     loadDepartments(value, 1, limit);
   };
 
@@ -33,7 +35,33 @@ export default function DepartmentsPage() {
   const handleLimitChange = (newLimit) => {
     setLimit(newLimit);
     setCurrentPage(1); // Reset to first page when changing limit
+    setTablePage(1); // Reset table page when changing limit
     loadDepartments(searchTerm, 1, newLimit);
+  };
+
+  // Table navigation functions
+  const handleTableNext = () => {
+    const newTablePage = tablePage + 1;
+    const startIndex = (newTablePage - 1) * limit;
+    const endIndex = startIndex + limit;
+    
+    if (endIndex < departments.length) {
+      setTablePage(newTablePage);
+    }
+  };
+
+  const handleTablePrevious = () => {
+    if (tablePage > 1) {
+      const newTablePage = tablePage - 1;
+      setTablePage(newTablePage);
+    }
+  };
+
+  // Get current table data
+  const getCurrentTableData = () => {
+    const startIndex = (tablePage - 1) * limit;
+    const endIndex = startIndex + limit;
+    return departments.slice(startIndex, endIndex);
   };
 
   const handleEdit = (department) => {
@@ -119,11 +147,11 @@ export default function DepartmentsPage() {
         <tbody>
           {departments.length === 0 && (
             <tr>
-              <td colSpan="6">No departments found.</td>
+              <td colSpan="5">No departments found.</td>
             </tr>
           )}
 
-          {departments.map(d => (
+          {getCurrentTableData().map(d => (
             <tr key={d.id}>
               <td>{d.depName}</td>
               <td>{d.depCode}</td>
@@ -137,6 +165,31 @@ export default function DepartmentsPage() {
           ))}
         </tbody>
       </table>
+
+      {/* Table Navigation */}
+      {departments.length > limit && (
+        <div className="table-navigation">
+          <button 
+            className="table-nav-btn" 
+            onClick={handleTablePrevious}
+            disabled={tablePage === 1}
+          >
+            ← Previous
+          </button>
+          
+          <span className="table-nav-info">
+            Showing {((tablePage - 1) * limit) + 1}-{Math.min(tablePage * limit, departments.length)} of {departments.length}
+          </span>
+          
+          <button 
+            className="table-nav-btn" 
+            onClick={handleTableNext}
+            disabled={tablePage * limit >= departments.length}
+          >
+            Next →
+          </button>
+        </div>
+      )}
 
       {/* Pagination Controls */}
       <div className="pagination-controls">

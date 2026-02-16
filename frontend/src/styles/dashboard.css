@@ -145,6 +145,48 @@ body {
   border-color: #3498db;
 }
 
+/* ===== TABLE NAVIGATION ===== */
+.table-navigation {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  margin: 20px 0;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+}
+
+.table-nav-btn {
+  padding: 10px 20px;
+  border: 1px solid #ddd;
+  background: white;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.table-nav-btn:hover:not(:disabled) {
+  background: #3498db;
+  color: white;
+  border-color: #3498db;
+}
+
+.table-nav-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.table-nav-info {
+  font-size: 14px;
+  color: #666;
+  font-weight: 500;
+  padding: 0 10px;
+}
+
 /* ===== TABLE ===== */
 
 table {

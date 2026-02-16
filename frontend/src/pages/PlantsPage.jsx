@@ -56,6 +56,7 @@ export default function PlantsPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [pagination, setPagination] = useState(null);
   const [limit, setLimit] = useState(6);
+  const [tablePage, setTablePage] = useState(1); // For table navigation
 
   const loadPlants = async (search = "", page = 1, rowsPerPage = 6) => {
     const params = new URLSearchParams();
@@ -73,6 +74,7 @@ export default function PlantsPage() {
     const value = e.target.value;
     setSearchTerm(value);
     setCurrentPage(1); // Reset to first page when searching
+    setTablePage(1); // Reset table page when searching
     loadPlants(value, 1, limit);
   };
 
@@ -84,7 +86,33 @@ export default function PlantsPage() {
   const handleLimitChange = (newLimit) => {
     setLimit(newLimit);
     setCurrentPage(1); // Reset to first page when changing limit
+    setTablePage(1); // Reset table page when changing limit
     loadPlants(searchTerm, 1, newLimit);
+  };
+
+  // Table navigation functions
+  const handleTableNext = () => {
+    const newTablePage = tablePage + 1;
+    const startIndex = (newTablePage - 1) * limit;
+    const endIndex = startIndex + limit;
+    
+    if (endIndex < plants.length) {
+      setTablePage(newTablePage);
+    }
+  };
+
+  const handleTablePrevious = () => {
+    if (tablePage > 1) {
+      const newTablePage = tablePage - 1;
+      setTablePage(newTablePage);
+    }
+  };
+
+  // Get current table data
+  const getCurrentTableData = () => {
+    const startIndex = (tablePage - 1) * limit;
+    const endIndex = startIndex + limit;
+    return plants.slice(startIndex, endIndex);
   };
 
   useEffect(() => {
@@ -125,11 +153,11 @@ export default function PlantsPage() {
         <tbody>
           {plants.length === 0 && (
             <tr>
-              <td colSpan="6">No plant found.</td>
+              <td colSpan="5">No plant found.</td>
             </tr>
           )}
 
-          {plants.map(p => (
+          {getCurrentTableData().map(p => (
             <tr key={p.id}>
               <td>{p.plantName}</td>
               <td>{p.plantCode}</td>
@@ -143,6 +171,31 @@ export default function PlantsPage() {
           ))}
         </tbody>
       </table>
+
+      {/* Table Navigation */}
+      {plants.length > limit && (
+        <div className="table-navigation">
+          <button 
+            className="table-nav-btn" 
+            onClick={handleTablePrevious}
+            disabled={tablePage === 1}
+          >
+            ← Previous
+          </button>
+          
+          <span className="table-nav-info">
+            Showing {((tablePage - 1) * limit) + 1}-{Math.min(tablePage * limit, plants.length)} of {plants.length}
+          </span>
+          
+          <button 
+            className="table-nav-btn" 
+            onClick={handleTableNext}
+            disabled={tablePage * limit >= plants.length}
+          >
+            Next →
+          </button>
+        </div>
+      )}
 
       {/* Pagination Controls */}
       <div className="pagination-controls">
