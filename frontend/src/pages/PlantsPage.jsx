@@ -79,7 +79,7 @@ export default function PlantsPage() {
 
       <input
         className="search-box"
-        placeholder="Search by name, code, location..."
+        placeholder="Search Name..."
       />
 
       <table>
