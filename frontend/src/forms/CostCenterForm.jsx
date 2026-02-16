@@ -15,7 +15,7 @@ export default function CostCenterForm({ onClose, onSaved, editData }) {
 
   const isEdit = !!editData;
 
-  // ================= LOAD PLANTS =================
+  //  LOAD PLANTS 
   useEffect(() => {
     document.body.style.overflow = "hidden";
     loadPlants();

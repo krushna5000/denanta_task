@@ -23,7 +23,7 @@ export default function WorkCenterForm({ onClose, onSaved, editData }) {
     setForm(prev => ({ ...prev, [key]: value }));
   };
 
-  // ================= LOAD INITIAL DATA =================
+  //  LOAD INITIAL DATA 
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
@@ -46,7 +46,7 @@ export default function WorkCenterForm({ onClose, onSaved, editData }) {
     }
   }, [editData]);
 
-  // ================= API CALLS =================
+  //  API CALLS 
 
   const loadPlants = async () => {
     try {
@@ -78,7 +78,7 @@ export default function WorkCenterForm({ onClose, onSaved, editData }) {
     }
   };
 
-  // ================= HANDLERS =================
+  //  HANDLERS 
 
   const onPlantChange = (value) => {
     change("plantId", value);
