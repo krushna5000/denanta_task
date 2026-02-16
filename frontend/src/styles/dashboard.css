@@ -306,6 +306,35 @@ tbody tr:hover {
   background: white;
   color: #333;
   box-sizing: border-box;
+  transition: border-color 0.2s ease;
+}
+
+.form-input.error,
+.form-textarea.error {
+  border-color: #e74c3c;
+  background-color: #fdf2f2;
+}
+
+.form-input:focus,
+.form-textarea:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+
+.form-input.error:focus,
+.form-textarea.error:focus {
+  border-color: #e74c3c;
+  box-shadow: 0 0 0 2px rgba(231, 76, 60, 0.2);
+}
+
+.error-text {
+  display: block;
+  color: #e74c3c;
+  font-size: 12px;
+  margin-top: 4px;
+  font-weight: 500;
+  line-height: 1.4;
 }
 
 .form-textarea {
@@ -420,4 +449,20 @@ tbody tr:hover {
   font-weight: 500;
   box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
   font-size: 14px;
+}
+
+.error-message {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: #e74c3c;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 4px;
+  z-index: 9999;
+  font-weight: 500;
+  box-shadow: 0 2px 8px rgba(231, 76, 60, 0.3);
+  font-size: 14px;
+  max-width: 400px;
+  word-wrap: break-word;
 }

@@ -1,24 +1,42 @@
 export const validateCostCenter = (req, res, next) => {
-  const { plantId, depId, costCenterName } = req.body;
+  const { plantId, depId, costCenterName, costCenterCode } = req.body;
+  const errors = [];
 
+  // Validate plantId
   if (!plantId) {
-    return res.status(400).json({
-      success: false,
-      message: "plantId required",
-    });
+    errors.push({ field: 'plantId', message: 'Plant selection is required' });
+  } else if (isNaN(plantId) || parseInt(plantId) <= 0) {
+    errors.push({ field: 'plantId', message: 'Invalid plant selection' });
   }
 
+  // Validate depId
   if (!depId) {
-    return res.status(400).json({
-      success: false,
-      message: "depId required",
-    });
+    errors.push({ field: 'depId', message: 'Department selection is required' });
+  } else if (isNaN(depId) || parseInt(depId) <= 0) {
+    errors.push({ field: 'depId', message: 'Invalid department selection' });
   }
 
+  // Validate costCenterName
   if (!costCenterName || costCenterName.trim() === "") {
+    errors.push({ field: 'costCenterName', message: 'Cost Center Name is required' });
+  } else if (costCenterName.trim().length < 2) {
+    errors.push({ field: 'costCenterName', message: 'Cost Center Name must be at least 2 characters' });
+  }
+
+  // Validate costCenterCode (optional field)
+  if (costCenterCode) {
+    if (costCenterCode.trim().length < 2) {
+      errors.push({ field: 'costCenterCode', message: 'Cost Center Code must be at least 2 characters' });
+    } else if (!/^[A-Za-z0-9-_]+$/.test(costCenterCode.trim())) {
+      errors.push({ field: 'costCenterCode', message: 'Cost Center Code can only contain letters, numbers, hyphens and underscores' });
+    }
+  }
+
+  if (errors.length > 0) {
     return res.status(400).json({
       success: false,
-      message: "costCenterName required",
+      message: 'Validation failed',
+      errors: errors
     });
   }
 

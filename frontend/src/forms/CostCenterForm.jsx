@@ -4,6 +4,7 @@ import API from "../api/api";
 export default function CostCenterForm({ onClose, onSaved, editData }) {
   const [plants, setPlants] = useState([]);
   const [departments, setDepartments] = useState([]);
+  const [errors, setErrors] = useState({});
 
   const [form, setForm] = useState({
     plantId: "",
@@ -67,12 +68,43 @@ export default function CostCenterForm({ onClose, onSaved, editData }) {
       ...prev,
       [key]: value,
     }));
+    // Clear error for this field when user starts typing
+    if (errors[key]) {
+      setErrors({ ...errors, [key]: "" });
+    }
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+
+    if (!form.plantId) {
+      newErrors.plantId = "Plant selection is required";
+    }
+
+    if (!form.depId) {
+      newErrors.depId = "Department selection is required";
+    }
+
+    if (!form.costCenterName.trim()) {
+      newErrors.costCenterName = "Cost Center Name is required";
+    } else if (form.costCenterName.trim().length < 2) {
+      newErrors.costCenterName = "Cost Center Name must be at least 2 characters";
+    }
+
+    if (form.costCenterCode && form.costCenterCode.trim().length < 2) {
+      newErrors.costCenterCode = "Cost Center Code must be at least 2 characters";
+    } else if (form.costCenterCode && !/^[A-Za-z0-9-_]+$/.test(form.costCenterCode.trim())) {
+      newErrors.costCenterCode = "Cost Center Code can only contain letters, numbers, hyphens and underscores";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const submit = async () => {
-    if (!form.plantId) return alert("Select Plant");
-    if (!form.depId) return alert("Select Department");
-    if (!form.costCenterName.trim()) return alert("Name required");
+    if (!validateForm()) {
+      return;
+    }
 
     const payload = {
       ...form,
@@ -92,13 +124,36 @@ export default function CostCenterForm({ onClose, onSaved, editData }) {
       onSaved();
       onClose();
     } catch (error) {
-      console.error("Save error:", error);
-      const msg =
-        error.response?.data?.message ||
-        error.response?.data?.error ||
-        error.message;
+      handleApiError(error);
+    }
+  };
 
-      alert("Error saving cost center: " + msg);
+  const handleApiError = (error) => {
+    if (error.response?.status === 400) {
+      const apiErrors = error.response.data;
+      
+      if (typeof apiErrors === 'string') {
+        // Single error message
+        showErrorMessage(apiErrors);
+      } else if (apiErrors.message) {
+        // Error with message field
+        showErrorMessage(apiErrors.message);
+      } else if (apiErrors.errors && Array.isArray(apiErrors.errors)) {
+        // Multiple field errors
+        const fieldErrors = {};
+        apiErrors.errors.forEach(err => {
+          if (err.field && err.message) {
+            fieldErrors[err.field] = err.message;
+          }
+        });
+        setErrors(fieldErrors);
+        showErrorMessage("Please fix the validation errors below");
+      }
+    } else if (error.response?.status === 409) {
+      showErrorMessage("A cost center with this code already exists");
+    } else {
+      const msg = error.response?.data?.message || error.response?.data?.error || error.message;
+      showErrorMessage("Error saving cost center: " + msg);
     }
   };
 
@@ -113,6 +168,17 @@ export default function CostCenterForm({ onClose, onSaved, editData }) {
     }, 3000);
   };
 
+  const showErrorMessage = (message) => {
+    const errorDiv = document.createElement('div');
+    errorDiv.textContent = message;
+    errorDiv.className = 'error-message';
+    document.body.appendChild(errorDiv);
+    
+    setTimeout(() => {
+      errorDiv.remove();
+    }, 5000);
+  };
+
   return (
     <div className="modal-overlay">
       <div className="modal-card">
@@ -125,7 +191,7 @@ export default function CostCenterForm({ onClose, onSaved, editData }) {
         <div className="form-group">
           <label>Plant *</label>
           <select
-            className="form-input"
+            className={`form-input ${errors.plantId ? 'error' : ''}`}
             value={form.plantId}
             onChange={(e) => change("plantId", e.target.value)}
           >
@@ -136,13 +202,14 @@ export default function CostCenterForm({ onClose, onSaved, editData }) {
               </option>
             ))}
           </select>
+          {errors.plantId && <span className="error-text">{errors.plantId}</span>}
         </div>
 
         {/* Department */}
         <div className="form-group">
           <label>Department *</label>
           <select
-            className="form-input"
+            className={`form-input ${errors.depId ? 'error' : ''}`}
             value={form.depId}
             onChange={(e) => change("depId", e.target.value)}
           >
@@ -153,26 +220,31 @@ export default function CostCenterForm({ onClose, onSaved, editData }) {
               </option>
             ))}
           </select>
+          {errors.depId && <span className="error-text">{errors.depId}</span>}
         </div>
 
         {/* Name */}
         <div className="form-group">
           <label>Cost Center Name *</label>
           <input
-            className="form-input"
+            className={`form-input ${errors.costCenterName ? 'error' : ''}`}
             value={form.costCenterName}
             onChange={(e) => change("costCenterName", e.target.value)}
+            placeholder="Enter Cost Center Name"
           />
+          {errors.costCenterName && <span className="error-text">{errors.costCenterName}</span>}
         </div>
 
         {/* Code */}
         <div className="form-group">
           <label>Cost Center Code</label>
           <input
-            className="form-input"
+            className={`form-input ${errors.costCenterCode ? 'error' : ''}`}
             value={form.costCenterCode}
             onChange={(e) => change("costCenterCode", e.target.value)}
+            placeholder="Enter Cost Center Code"
           />
+          {errors.costCenterCode && <span className="error-text">{errors.costCenterCode}</span>}
         </div>
 
         {/* Description */}
