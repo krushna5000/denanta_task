@@ -5,8 +5,8 @@ const router = express.Router();
 
 router.post('/', controller.createDepartment);
 router.get('/', controller.getAllDepartments);
-router.get('/:id', controller.getDepartmentById);
 router.get('/by-plant', controller.getDepartmentsByPlant);
+router.get('/:id', controller.getDepartmentById);
 router.put('/:id', controller.updateDepartment);
 router.delete('/:id', controller.deleteDepartment);
 

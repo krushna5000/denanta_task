@@ -5,9 +5,9 @@ const router = express.Router();
 
 router.post('/', controller.createCostCenter);
 router.get('/', controller.getAllCostCenters);
-router.get('/:id', controller.getCostCenterById);
 router.get('/by-plant', controller.getCostCentersByPlant);
 router.get('/by-department', controller.getCostCentersByDepartment);
+router.get('/:id', controller.getCostCenterById);
 router.put('/:id', controller.updateCostCenter);
 router.delete('/:id', controller.deleteCostCenter);
 
