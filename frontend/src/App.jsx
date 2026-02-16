@@ -8,14 +8,12 @@ import WorkCentersPage from "./pages/WorkCentersPage";
 export default function App() {
   return (
     <BrowserRouter>
-      <Layout>
-        <Routes>
-          <Route path="/" element={<PlantsPage />} />
-          <Route path="/departments" element={<DepartmentsPage />} />
-          <Route path="/cost-centers" element={<CostCentersPage />} />
-          <Route path="/work-centers" element={<WorkCentersPage />} />
-        </Routes>
-      </Layout>
+      <Routes>
+        <Route path="/" element={<Layout title="Plant Management"><PlantsPage /></Layout>} />
+        <Route path="/departments" element={<Layout title="Department Management"><DepartmentsPage /></Layout>} />
+        <Route path="/cost-centers" element={<Layout title="Cost Center Management"><CostCentersPage /></Layout>} />
+        <Route path="/work-centers" element={<Layout title="Work Center Management"><WorkCentersPage /></Layout>} />
+      </Routes>
     </BrowserRouter>
   );
 }

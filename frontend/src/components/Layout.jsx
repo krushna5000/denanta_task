@@ -1,6 +1,6 @@
 import Sidebar from "./Sidebar";
 
-export default function Layout({ children }) {
+export default function Layout({ children, title }) {
   return (
     <div className="layout">
       <Sidebar />
@@ -11,11 +11,10 @@ export default function Layout({ children }) {
           justifyContent: 'space-between', 
           alignItems: 'center',
           padding: '20px',
-          borderBottom: '1px solid #ddd',
           backgroundColor: '#f8f9fa'
         }}>
-          <h1 style={{ margin: 0, color: '#2c3e50' }}>
-            Management System
+          <h1 style={{ margin: 0 }}>
+            {title}
           </h1>
         </div>
 

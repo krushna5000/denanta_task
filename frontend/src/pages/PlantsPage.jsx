@@ -121,7 +121,6 @@ export default function PlantsPage() {
 
   return (
     <div>
-
       <div className="page-header">
         <div></div>
         <button
