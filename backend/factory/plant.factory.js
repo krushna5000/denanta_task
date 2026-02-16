@@ -9,7 +9,9 @@ export const getPlants = async () => {
 
 
 export const getPlantById = async (id) => {
-  return db.query.plant.findFirst();
+  return db.query.plant.findFirst({
+    where: eq(plant.id, id)
+  });
 };
 
 
