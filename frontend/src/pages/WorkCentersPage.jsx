@@ -7,9 +7,18 @@ export default function WorkCentersPage() {
   const [showForm, setShowForm] = useState(false);
   const [editData, setEditData] = useState(null);
 
-  const load = async () => {
-    const res = await API.get("/work-centers");
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const load = async (search = "") => {
+    const url = search ? `/work-centers?search=${encodeURIComponent(search)}` : "/work-centers";
+    const res = await API.get(url);
     setRows(res.data.data || []);
+  };
+
+  const handleSearch = (e) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+    load(value);
   };
 
   const handleEdit = (workCenter) => {
@@ -74,7 +83,12 @@ export default function WorkCentersPage() {
         </button>
       </div>
 
-      <input className="search-box" placeholder="Search work center..." />
+      <input
+        className="search-box"
+        placeholder="Search by name or code..."
+        value={searchTerm}
+        onChange={handleSearch}
+      />
 
       <table>
         <thead>

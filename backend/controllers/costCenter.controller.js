@@ -10,8 +10,13 @@ export const createCostCenter = async (req, res) => {
 };
 
 export const getAllCostCenters = async (req, res) => {
-  const data = await costCenterService.getAllCostCenters();
-  res.json({ success: true, data });
+  try {
+    const { search } = req.query;
+    const data = await costCenterService.getAllCostCenters(search);
+    res.json({ success: true, data });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
 };
 
 export const getCostCenterById = async (req, res) => {

@@ -7,9 +7,18 @@ export default function DepartmentsPage() {
   const [showForm, setShowForm] = useState(false);
   const [editData, setEditData] = useState(null);
 
-  const loadDepartments = async () => {
-    const res = await API.get("/departments");
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const loadDepartments = async (search = "") => {
+    const url = search ? `/departments?search=${encodeURIComponent(search)}` : "/departments";
+    const res = await API.get(url);
     setDepartments(res.data.data || []);
+  };
+
+  const handleSearch = (e) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+    loadDepartments(value);
   };
 
   const handleEdit = (department) => {
@@ -79,7 +88,9 @@ export default function DepartmentsPage() {
 
       <input
         className="search-box"
-        placeholder="Search department..."
+        placeholder="Search by name or code..."
+        value={searchTerm}
+        onChange={handleSearch}
       />
 
       <table>

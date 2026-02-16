@@ -9,8 +9,8 @@ export const createPlant = async (data) => {
   return result[0];
 };
 
-export const getAllPlants = async () => {
-  return plantFactory.getPlants();
+export const getAllPlants = async (search) => {
+  return plantFactory.getPlants(search);
 };
 
 export const getPlantById = async (id) => {

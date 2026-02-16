@@ -52,9 +52,18 @@ export default function PlantsPage() {
     }, 3000);
   };
 
-  const loadPlants = async () => {
-    const res = await API.get("/plants");
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const loadPlants = async (search = "") => {
+    const url = search ? `/plants?search=${encodeURIComponent(search)}` : "/plants";
+    const res = await API.get(url);
     setPlants(res.data.data || []);
+  };
+
+  const handleSearch = (e) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+    loadPlants(value);
   };
 
   useEffect(() => {
@@ -79,7 +88,9 @@ export default function PlantsPage() {
 
       <input
         className="search-box"
-        placeholder="Search Name..."
+        placeholder="Search by name or code..."
+        value={searchTerm}
+        onChange={handleSearch}
       />
 
       <table>

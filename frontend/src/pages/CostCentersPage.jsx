@@ -7,9 +7,18 @@ export default function CostCentersPage() {
   const [showForm, setShowForm] = useState(false);
   const [editData, setEditData] = useState(null);
 
-  const load = async () => {
-    const res = await API.get("/cost-centers");
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const load = async (search = "") => {
+    const url = search ? `/cost-centers?search=${encodeURIComponent(search)}` : "/cost-centers";
+    const res = await API.get(url);
     setRows(res.data.data || []);
+  };
+
+  const handleSearch = (e) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+    load(value);
   };
 
   const handleEdit = (costCenter) => {
@@ -74,7 +83,12 @@ export default function CostCentersPage() {
         </button>
       </div>
 
-      <input className="search-box" placeholder="Search cost center..." />
+      <input
+        className="search-box"
+        placeholder="Search by name or code..."
+        value={searchTerm}
+        onChange={handleSearch}
+      />
 
       <table>
         <thead>

@@ -10,8 +10,13 @@ export const createDepartment = async (req, res) => {
 };
 
 export const getAllDepartments = async (req, res) => {
-  const data = await departmentService.getAllDepartments();
-  res.json({ success: true, data });
+  try {
+    const { search } = req.query;
+    const data = await departmentService.getAllDepartments(search);
+    res.json({ success: true, data });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
 };
 
 export const getDepartmentById = async (req, res) => {

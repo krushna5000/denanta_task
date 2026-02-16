@@ -11,7 +11,8 @@ export const createPlant = async (req, res) => {
 
 export const getAllPlants = async (req, res) => {
   try {
-    const data = await plantService.getAllPlants();
+    const { search } = req.query;
+    const data = await plantService.getAllPlants(search);
     res.json({ success: true, data });
   } catch {
     res.status(500).json({ success: false, message: "Fetch failed" });

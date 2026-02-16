@@ -10,8 +10,13 @@ export const createWorkCenter = async (req, res) => {
 };
 
 export const getAllWorkCenters = async (req, res) => {
-  const data = await workCenterService.getAllWorkCenters();
-  res.json({ success: true, data });
+  try {
+    const { search } = req.query;
+    const data = await workCenterService.getAllWorkCenters(search);
+    res.json({ success: true, data });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
 };
 
 export const getWorkCenterById = async (req, res) => {

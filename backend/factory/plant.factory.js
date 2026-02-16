@@ -1,10 +1,19 @@
 import db from "../db/db_connection.js";
 import { plant } from "../db/schema.js";
-import { eq } from "drizzle-orm";
+import { eq, ilike, or } from "drizzle-orm";
 
 
-export const getPlants = async () => {
-  return db.query.plant.findMany();
+export const getPlants = async (search) => {
+  if (!search) {
+    return db.query.plant.findMany();
+  }
+  
+  return db.query.plant.findMany({
+    where: or(
+      ilike(plant.plantName, `%${search}%`),
+      ilike(plant.plantCode, `%${search}%`)
+    )
+  });
 };
 
 

@@ -1,14 +1,26 @@
 import db from "../db/db_connection.js";
 import { costCenter } from "../db/schema.js";
-import { eq } from "drizzle-orm";
+import { eq, ilike, or } from "drizzle-orm";
 
 
-export const getCostCenters = async () => {
+export const getCostCenters = async (search) => {
+  if (!search) {
+    return db.query.costCenter.findMany({
+      with: {
+        plant: true,
+        department: true,
+      },
+    });
+  }
+  
   return db.query.costCenter.findMany({
+    where: or(
+      ilike(costCenter.costCenterName, `%${search}%`),
+      ilike(costCenter.costCenterCode, `%${search}%`)
+    ),
     with: {
       plant: true,
       department: true,
-      
     },
   });
 };

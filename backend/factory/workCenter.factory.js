@@ -1,10 +1,24 @@
 import db from "../db/db_connection.js";
 import { workCenter } from "../db/schema.js";
-import { eq } from "drizzle-orm";
+import { eq, ilike, or } from "drizzle-orm";
 
 
-export const getWorkCenters = async () => {
+export const getWorkCenters = async (search) => {
+  if (!search) {
+    return db.query.workCenter.findMany({
+      with: {
+        plant: true,
+        department: true,
+        costCenter: true,
+      },
+    });
+  }
+  
   return db.query.workCenter.findMany({
+    where: or(
+      ilike(workCenter.workName, `%${search}%`),
+      ilike(workCenter.workCode, `%${search}%`)
+    ),
     with: {
       plant: true,
       department: true,
