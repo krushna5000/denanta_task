@@ -23,7 +23,7 @@ export default function DepartmentForm({ onClose, onSaved, editData }) {
         depCode: editData?.depCode || "",
         depDescription: editData?.depDescription || "",
       });
-      // Don't load plants automatically - wait for user click
+      // Don't load plants automatically - wait for user to change plant
     }
   }, [editData]);
 
@@ -185,6 +185,13 @@ export default function DepartmentForm({ onClose, onSaved, editData }) {
             onFocus={handlePlantDropdownClick}
           >
             <option value="">Select Plant</option>
+            {/* Show current plant option in edit mode */}
+            {isEdit && editData?.plant && (
+              <option value={editData.plant.id}>
+                {editData.plant.plantName}
+              </option>
+            )}
+            {/* Show loaded plants when available */}
             {plants.map(p => (
               <option key={p.id} value={p.id}>
                 {p.plantName}

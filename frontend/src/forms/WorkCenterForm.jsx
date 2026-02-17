@@ -145,7 +145,15 @@ export default function WorkCenterForm({ onClose, onSaved, editData }) {
   // For Edit Mode Only
   useEffect(() => {
     if (editData) {
-      // Don't load departments/cost centers automatically - wait for user clicks
+      setForm({
+        plantId: editData.plantId?.toString() || "",
+        depId: editData.depId?.toString() || "",
+        costCenterId: editData.costCenterId?.toString() || "",
+        workName: editData?.workName || "",
+        workCode: editData?.workCode || "",
+        workDescription: editData?.workDescription || "",
+      });
+      // Don't load plants/departments/cost centers automatically - wait for user to change
     }
   }, [editData]);
 
@@ -250,6 +258,13 @@ export default function WorkCenterForm({ onClose, onSaved, editData }) {
             onFocus={handlePlantDropdownClick}
           >
             <option value="">Select Plant</option>
+            {/* Show current plant option in edit mode */}
+            {isEdit && editData?.plant && (
+              <option value={editData.plant.id}>
+                {editData.plant.plantName}
+              </option>
+            )}
+            {/* Show loaded plants when available */}
             {plants.map(p => (
               <option key={p.id} value={p.id}>
                 {p.plantName}
@@ -271,6 +286,13 @@ export default function WorkCenterForm({ onClose, onSaved, editData }) {
             disabled={!form.plantId}
           >
             <option value="">Select Department</option>
+            {/* Show current department option in edit mode */}
+            {isEdit && editData?.department && (
+              <option value={editData.department.id}>
+                {editData.department.depName}
+              </option>
+            )}
+            {/* Show loaded departments when available */}
             {departments.map(d => (
               <option key={d.id} value={d.id}>
                 {d.depName}
@@ -292,6 +314,13 @@ export default function WorkCenterForm({ onClose, onSaved, editData }) {
             disabled={!form.depId}
           >
             <option value="">Select Cost Center</option>
+            {/* Show current cost center option in edit mode */}
+            {isEdit && editData?.costCenter && (
+              <option value={editData.costCenter.id}>
+                {editData.costCenter.costCenterName}
+              </option>
+            )}
+            {/* Show loaded cost centers when available */}
             {costCenters.map(c => (
               <option key={c.id} value={c.id}>
                 {c.costCenterName}

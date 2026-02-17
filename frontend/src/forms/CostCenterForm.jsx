@@ -78,7 +78,7 @@ export default function CostCenterForm({ onClose, onSaved, editData }) {
         costCenterCode: editData.costCenterCode || "",
         description: editData.description || "",
       });
-      // Don't load departments automatically - wait for user to click plant dropdown
+      // Don't load plants/departments automatically - wait for user to change
     }
   }, [editData]);
 
@@ -217,6 +217,13 @@ export default function CostCenterForm({ onClose, onSaved, editData }) {
             onFocus={handlePlantDropdownClick}
           >
             <option value="">Select Plant</option>
+            {/* Show current plant option in edit mode */}
+            {isEdit && editData?.plant && (
+              <option value={editData.plant.id}>
+                {editData.plant.plantName}
+              </option>
+            )}
+            {/* Show loaded plants when available */}
             {plants.map((p) => (
               <option key={p.id} value={p.id.toString()}>
                 {p.plantName}
@@ -238,6 +245,13 @@ export default function CostCenterForm({ onClose, onSaved, editData }) {
             disabled={!form.plantId}
           >
             <option value="">Select Department</option>
+            {/* Show current department option in edit mode */}
+            {isEdit && editData?.department && (
+              <option value={editData.department.id}>
+                {editData.department.depName}
+              </option>
+            )}
+            {/* Show loaded departments when available */}
             {departments.map((d) => (
               <option key={d.id} value={d.id.toString()}>
                 {d.depName}
