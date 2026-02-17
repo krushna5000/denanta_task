@@ -72,6 +72,32 @@ export const updatePlant = async (req, res) => {
 };
 
 export const deletePlant = async (req, res) => {
-  await plantService.deletePlant(Number(req.params.id));
-  res.json({ success: true });
+  try {
+    await plantService.deletePlant(Number(req.params.id));
+    res.json({ success: true });
+  } catch (err) {
+    console.error('Plant deletion error:', err);
+    
+    // Handle foreign key constraint violation
+    if (err.code === '23503') {
+      if (err.detail?.includes('work_center_plant_id_plant_id_fk')) {
+        return res.status(400).json({ 
+          success: false, 
+          message: 'Cannot delete plant: It is referenced by work centers. Please delete the work centers first.' 
+        });
+      }
+      if (err.detail?.includes('department_plant_id_plant_id_fk')) {
+        return res.status(400).json({ 
+          success: false, 
+          message: 'Cannot delete plant: It is referenced by departments. Please delete the departments first.' 
+        });
+      }
+    }
+    
+    // Handle other database errors
+    res.status(400).json({ 
+      success: false, 
+      message: 'Failed to delete plant. Please try again.' 
+    });
+  }
 };
