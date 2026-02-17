@@ -159,6 +159,7 @@ export default function CostCenterForm({ onClose, onSaved, editData }) {
         showErrorMessage(apiErrors.message);
       } else if (apiErrors.errors && Array.isArray(apiErrors.errors)) {
         // Multiple field errors
+        console.log('Multiple field errors:', apiErrors.errors); // Debug log
         const fieldErrors = {};
         apiErrors.errors.forEach(err => {
           if (err.field && err.message) {
@@ -166,7 +167,9 @@ export default function CostCenterForm({ onClose, onSaved, editData }) {
           }
         });
         setErrors(fieldErrors);
-        showErrorMessage("Please fix the validation errors below");
+        // Show specific error message for each field
+        const errorMessages = Object.values(fieldErrors).join(', ');
+        showErrorMessage("Please fix the validation errors: " + errorMessages);
       }
     } else if (error.response?.status === 409) {
       showErrorMessage("A cost center with this code already exists");
