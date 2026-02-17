@@ -51,6 +51,12 @@ export default function DepartmentForm({ onClose, onSaved, editData }) {
     loadPlants(); // Load plants only when dropdown is clicked
   };
 
+  const handlePlantChange = (plantId) => {
+    change("plantId", plantId);
+    // In edit mode, when plant changes, we don't need to load departments
+    // since departments are not shown in this form (only plant selection)
+  };
+
   const change = (k, v) => {
     setForm({ ...form, [k]: v });
     // Clear error for this field when user starts typing
@@ -169,13 +175,12 @@ export default function DepartmentForm({ onClose, onSaved, editData }) {
         </div>
 
         {/* Plant Dropdown */}
-
         <div className="form-group">
           <label>Plant *</label>
           <select
             className={`form-input ${errors.plantId ? 'error' : ''}`}
             value={form.plantId}
-            onChange={e => change("plantId", e.target.value)}
+            onChange={e => handlePlantChange(e.target.value)}
             onClick={handlePlantDropdownClick}
             onFocus={handlePlantDropdownClick}
           >

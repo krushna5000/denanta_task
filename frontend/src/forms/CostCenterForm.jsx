@@ -61,6 +61,13 @@ export default function CostCenterForm({ onClose, onSaved, editData }) {
     }
   };
 
+  const handleDepartmentDropdownClick = () => {
+    // Load departments for the selected plant when department dropdown is clicked
+    if (form.plantId) {
+      loadDepartments(form.plantId);
+    }
+  };
+
   // ================= SET EDIT DATA =================
   useEffect(() => {
     if (editData) {
@@ -226,6 +233,8 @@ export default function CostCenterForm({ onClose, onSaved, editData }) {
             className={`form-input ${errors.depId ? 'error' : ''}`}
             value={form.depId}
             onChange={(e) => change("depId", e.target.value)}
+            onClick={handleDepartmentDropdownClick}
+            onFocus={handleDepartmentDropdownClick}
             disabled={!form.plantId}
           >
             <option value="">Select Department</option>

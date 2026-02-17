@@ -128,6 +128,20 @@ export default function WorkCenterForm({ onClose, onSaved, editData }) {
     }
   };
 
+  const handleDepartmentDropdownClick = () => {
+    // Load departments for the selected plant when department dropdown is clicked
+    if (form.plantId) {
+      loadDepartments(form.plantId);
+    }
+  };
+
+  const handleCostCenterDropdownClick = () => {
+    // Load cost centers for the selected department when cost center dropdown is clicked
+    if (form.depId) {
+      loadCostCenters(form.depId);
+    }
+  };
+
   // For Edit Mode Only
   useEffect(() => {
     if (editData) {
@@ -252,6 +266,8 @@ export default function WorkCenterForm({ onClose, onSaved, editData }) {
             className={`form-input ${errors.depId ? 'error' : ''}`}
             value={form.depId}
             onChange={(e) => handleDepChange(e.target.value)}
+            onClick={handleDepartmentDropdownClick}
+            onFocus={handleDepartmentDropdownClick}
             disabled={!form.plantId}
           >
             <option value="">Select Department</option>
@@ -271,6 +287,8 @@ export default function WorkCenterForm({ onClose, onSaved, editData }) {
             className={`form-input ${errors.costCenterId ? 'error' : ''}`}
             value={form.costCenterId}
             onChange={(e) => change("costCenterId", e.target.value)}
+            onClick={handleCostCenterDropdownClick}
+            onFocus={handleCostCenterDropdownClick}
             disabled={!form.depId}
           >
             <option value="">Select Cost Center</option>
