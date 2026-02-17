@@ -1,6 +1,9 @@
 import Sidebar from "./Sidebar";
+import { useAuth } from "../contexts/AuthContext";
 
 export default function Layout({ children, title }) {
+  const { user, logout } = useAuth();
+
   return (
     <div className="layout">
       <Sidebar />
@@ -13,9 +16,28 @@ export default function Layout({ children, title }) {
           padding: '20px',
           backgroundColor: '#f8f9fa'
         }}>
-          <h1 style={{ margin: 0 }}>
+          <h1 style={{ margin: 0, color: '#333333', fontSize: '24px', fontWeight: '600' }}>
             {title}
           </h1>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+            <span style={{ fontSize: '14px', color: '#666' }}>
+              Welcome, {user?.name}
+            </span>
+            <button 
+              onClick={logout}
+              style={{
+                padding: '8px 16px',
+                backgroundColor: '#dc3545',
+                color: 'white',
+                border: 'none',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                fontSize: '14px'
+              }}
+            >
+              Logout
+            </button>
+          </div>
         </div>
 
         {/* Main content */}

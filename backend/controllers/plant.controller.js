@@ -5,7 +5,38 @@ export const createPlant = async (req, res) => {
     const data = await plantService.createPlant(req.body);
     res.status(201).json({ success: true, data });
   } catch (err) {
-    res.status(400).json({ success: false, message: err.message });
+    console.error('Plant creation error:', err);
+    
+    // Handle specific database errors
+    if (err.code === '23505') {
+      // Unique constraint violation
+      if (err.detail?.includes('plant_code')) {
+        return res.status(400).json({ 
+          success: false, 
+          message: 'Plant code already exists.' 
+        });
+      }
+      if (err.detail?.includes('plant_name')) {
+        return res.status(400).json({ 
+          success: false, 
+          message: 'Plant name already exists.' 
+        });
+      }
+    }
+    
+    // Handle validation errors
+    if (err.message?.includes('is required')) {
+      return res.status(400).json({ 
+        success: false, 
+        message: err.message 
+      });
+    }
+    
+    // Generic error
+    res.status(400).json({ 
+      success: false, 
+      message: 'Plant Allready exist' 
+    });
   }
 };
 

@@ -172,7 +172,8 @@ export default function PlantsPage() {
               <td>
                 <button className="btn-edit" onClick={() => handleEdit(p)} title="Edit"><i class="fa-solid fa-pen-to-square"></i></button>
                 <button className="btn-delete" onClick={() => handleDelete(p.id)} title="Delete"><i class="fa-solid fa-calendar-xmark"></i></button>
-              </td>
+       
+         </td>
             </tr>
           ))}
         </tbody>

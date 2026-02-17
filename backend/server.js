@@ -7,6 +7,7 @@ import plantRoutes from "./routes/plant.routes.js";
 import departmentRoutes from "./routes/department.routes.js";
 import costCenterRoutes from "./routes/costCenter.routes.js";
 import workCenterRoutes from "./routes/workCenter.routes.js";
+import authRoutes from "./routes/auth.routes.js";
 
 const app = express();
 
@@ -26,6 +27,7 @@ app.use("/api/plants", plantRoutes);
 app.use("/api/departments", departmentRoutes);
 app.use("/api/cost-centers", costCenterRoutes);
 app.use("/api/work-centers", workCenterRoutes);
+app.use("/api/auth", authRoutes);
 
 app.use((req, res) => {
   res.status(404).json({

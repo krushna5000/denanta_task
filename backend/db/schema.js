@@ -1,6 +1,16 @@
 
-import { pgTable, serial, varchar, text, integer } from 'drizzle-orm/pg-core';
+import { pgTable, serial, varchar, text, integer, timestamp } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
+
+// User table for authentication
+export const user = pgTable('user', {
+  id: serial('id').primaryKey(),
+  name: varchar('name', { length: 255 }).notNull(),
+  email: varchar('email', { length: 255 }).unique().notNull(),
+  password: varchar('password', { length: 255 }).notNull(),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow(),
+});
 
 // Plant table
 export const plant = pgTable('plant', {

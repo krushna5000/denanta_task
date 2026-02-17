@@ -1,8 +1,18 @@
 import * as plantFactory from "../factory/plant.factory.js";
 
 export const createPlant = async (data) => {
+  // Validate required fields
   if (!data.plantName || data.plantName.trim() === "") {
-    throw new Error("plantName is required");
+    throw new Error("Plant name is required");
+  }
+  
+  if (!data.plantCode || data.plantCode.trim() === "") {
+    throw new Error("Plant code is required");
+  }
+  
+  // Validate plant code format (optional: alphanumeric, spaces, hyphens)
+  if (data.plantCode && !/^[a-zA-Z0-9\s-]*$/.test(data.plantCode)) {
+    throw new Error("Plant code can only contain letters, numbers, spaces, and hyphens");
   }
 
   const result = await plantFactory.createPlant(data);
