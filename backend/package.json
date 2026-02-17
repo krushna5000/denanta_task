@@ -5,7 +5,7 @@
   "type": "module",
   "main": "server.js",
   "scripts": {
-    "uma": "nodemon server.js",
+    "dev": "nodemon server.js",
     "migration:generate": "drizzle-kit generate",
     "migration:push": "node -r esbuild-register db/migrate.js"
   },

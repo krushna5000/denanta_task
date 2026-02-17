@@ -37,9 +37,16 @@ export default function WorkCentersPage() {
     load(searchTerm, 1, newLimit);
   };
 
-  const handleEdit = (workCenter) => {
-    setEditData(workCenter);
-    setShowForm(true);
+  const handleEdit = async (workCenter) => {
+    try {
+      // Fetch fresh data by ID when editing
+      const res = await API.get(`/work-centers/${workCenter.id}`);
+      setEditData(res.data.data);
+      setShowForm(true);
+    } catch (error) {
+      const msg = error.response?.data?.message || error.response?.data?.error || error.message;
+      alert("Error loading work center data: " + msg);
+    }
   };
 
   const handleDelete = async (id) => {

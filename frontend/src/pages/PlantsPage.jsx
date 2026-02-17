@@ -20,9 +20,16 @@ export default function PlantsPage() {
     }
   };
 
-  const handleEdit = (plant) => {
-    setEditData(plant);
-    setShowForm(true);
+  const handleEdit = async (plant) => {
+    try {
+      // Fetch fresh data by ID when editing
+      const res = await API.get(`/plants/${plant.id}`);
+      setEditData(res.data.data);
+      setShowForm(true);
+    } catch (error) {
+      const msg = error.response?.data?.message || error.response?.data?.error || error.message;
+      alert("Error loading plant data: " + msg);
+    }
   };
 
   const handleCloseForm = () => {

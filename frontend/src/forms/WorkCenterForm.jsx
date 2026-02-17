@@ -63,24 +63,44 @@ export default function WorkCenterForm({ onClose, onSaved, editData }) {
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
-    loadPlants();
+    
+    // Only load plants if not in edit mode
+    if (!isEdit) {
+      loadPlants();
+    } else if (editData?.plant) {
+      // In edit mode, set plants directly from editData
+      setPlants([editData.plant]);
+    }
 
     return () => {
       document.body.style.overflow = "auto";
     };
-  }, []);
+  }, [isEdit, editData]);
 
   // For Edit Mode Only
   useEffect(() => {
     if (editData) {
-      if (editData.plantId) {
-        loadDepartments(editData.plantId);
+      if (!isEdit) {
+        // Only load departments if not in edit mode
+        if (editData.plantId) {
+          loadDepartments(editData.plantId);
+        }
+      } else if (editData?.department) {
+        // In edit mode, set departments directly from editData
+        setDepartments([editData.department]);
       }
-      if (editData.depId) {
-        loadCostCenters(editData.depId);
+      
+      if (!isEdit) {
+        // Only load cost centers if not in edit mode
+        if (editData.depId) {
+          loadCostCenters(editData.depId);
+        }
+      } else if (editData?.costCenter) {
+        // In edit mode, set cost centers directly from editData
+        setCostCenters([editData.costCenter]);
       }
     }
-  }, [editData]);
+  }, [editData, isEdit]);
 
   //  API CALLS 
 

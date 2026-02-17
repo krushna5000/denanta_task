@@ -64,9 +64,16 @@ export default function DepartmentsPage() {
     return departments.slice(startIndex, endIndex);
   };
 
-  const handleEdit = (department) => {
-    setEditData(department);
-    setShowForm(true);
+  const handleEdit = async (department) => {
+    try {
+      // Fetch fresh data by ID when editing
+      const res = await API.get(`/departments/${department.id}`);
+      setEditData(res.data.data);
+      setShowForm(true);
+    } catch (error) {
+      const msg = error.response?.data?.message || error.response?.data?.error || error.message;
+      alert("Error loading department data: " + msg);
+    }
   };
 
   const handleDelete = async (id) => {

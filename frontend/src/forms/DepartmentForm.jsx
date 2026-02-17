@@ -3,7 +3,6 @@ import API from "../api/api";
 
 export default function DepartmentForm({ onClose, onSaved, editData }) {
   const [plants, setPlants] = useState([]);
-  const [departments, setDepartments] = useState([]);
   const [errors, setErrors] = useState({});
   
   const [form, setForm] = useState({
@@ -17,32 +16,23 @@ export default function DepartmentForm({ onClose, onSaved, editData }) {
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
-    loadPlants();
+    
+    // Only load plants if not in edit mode
+    if (!isEdit) {
+      loadPlants();
+    } else if (editData?.plant) {
+      // In edit mode, set plants directly from editData
+      setPlants([editData.plant]);
+    }
 
     return () => {
       document.body.style.overflow = "auto";
     };
-  }, []);
-
-  useEffect(() => {
-    if (editData?.plantId) {
-      loadDepartments(editData.plantId);
-    }
-  }, [editData]);
+  }, [isEdit, editData]);
 
   const loadPlants = async () => {
     const res = await API.get("/plants");
     setPlants(res.data.data || []);
-  };
-
-  const loadDepartments = async (plantId) => {
-    try {
-      const res = await API.get(`/departments/by-plant?plantId=${plantId}`);
-      setDepartments(res.data.data || []);
-    } catch (err) {
-      console.error("Error loading departments:", err);
-      setDepartments([]);
-    }
   };
 
   const change = (k, v) => {

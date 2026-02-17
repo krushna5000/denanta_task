@@ -19,12 +19,19 @@ export default function CostCenterForm({ onClose, onSaved, editData }) {
   //  LOAD PLANTS 
   useEffect(() => {
     document.body.style.overflow = "hidden";
-    loadPlants();
+    
+    // Only load plants if not in edit mode
+    if (!isEdit) {
+      loadPlants();
+    } else if (editData?.plant) {
+      // In edit mode, set plants directly from editData
+      setPlants([editData.plant]);
+    }
 
     return () => {
       document.body.style.overflow = "auto";
     };
-  }, []);
+  }, [isEdit, editData]);
 
   // ================= SET EDIT DATA =================
   useEffect(() => {
@@ -41,8 +48,14 @@ export default function CostCenterForm({ onClose, onSaved, editData }) {
 
   // ================= LOAD ALL DEPARTMENTS =================
   useEffect(() => {
-    loadAllDepartments();
-  }, []);
+    // Only load all departments if not in edit mode
+    if (!isEdit) {
+      loadAllDepartments();
+    } else if (editData?.department) {
+      // In edit mode, set departments directly from editData
+      setDepartments([editData.department]);
+    }
+  }, [isEdit, editData]);
 
   const loadPlants = async () => {
     try {
