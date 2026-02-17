@@ -2,7 +2,7 @@ import Sidebar from "./Sidebar";
 import { useAuth } from "../contexts/AuthContext";
 
 export default function Layout({ children, title }) {
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
 
   return (
     <div className="layout">

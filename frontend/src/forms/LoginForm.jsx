@@ -16,6 +16,10 @@ const LoginForm = ({ onLogin, onShowSignup }) => {
       ...prev,
       [name]: value
     }));
+    // Clear error when user starts typing
+    if (error) {
+      setError('');
+    }
   };
 
   const validateForm = () => {
@@ -67,6 +71,7 @@ const LoginForm = ({ onLogin, onShowSignup }) => {
 
   return (
     <div className="auth-form">
+      {error && <ErrorMessage message={error} onClose={() => setError('')} />}
       <h2>Login</h2>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
@@ -91,7 +96,6 @@ const LoginForm = ({ onLogin, onShowSignup }) => {
             required
           />
         </div>
-        {error && <ErrorMessage message={error} onClose={() => setError('')} />}
         <button type="submit" disabled={loading}>
           {loading ? 'Logging in...' : 'Login'}
         </button>
