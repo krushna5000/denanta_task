@@ -3,36 +3,52 @@ import API from "../api/api";
 
 export default function DepartmentForm({ onClose, onSaved, editData }) {
   const [plants, setPlants] = useState([]);
+  const [plantsLoaded, setPlantsLoaded] = useState(false);
   const [errors, setErrors] = useState({});
-  
+
   const [form, setForm] = useState({
-    plantId: editData?.plantId?.toString() || "",
-    depName: editData?.depName || "",
-    depCode: editData?.depCode || "",
-    depDescription: editData?.depDescription || "",
+    plantId: "",
+    depName: "",
+    depCode: "",
+    depDescription: "",
   });
 
   const isEdit = !!editData;
 
   useEffect(() => {
-    document.body.style.overflow = "hidden";
-    
-    // Only load plants if not in edit mode
-    if (!isEdit) {
-      loadPlants();
-    } else if (editData?.plant) {
-      // In edit mode, set plants directly from editData
-      setPlants([editData.plant]);
+    if (editData) {
+      setForm({
+        plantId: editData.plantId?.toString() || "",
+        depName: editData?.depName || "",
+        depCode: editData?.depCode || "",
+        depDescription: editData?.depDescription || "",
+      });
+      // Don't load plants automatically - wait for user click
     }
+  }, [editData]);
 
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
     return () => {
       document.body.style.overflow = "auto";
     };
-  }, [isEdit, editData]);
+  }, []);
 
   const loadPlants = async () => {
-    const res = await API.get("/plants");
-    setPlants(res.data.data || []);
+    if (plantsLoaded) return; // Don't reload if already loaded
+    
+    try {
+      const res = await API.get("/plants");
+      setPlants(res.data.data || []);
+      setPlantsLoaded(true);
+    } catch (err) {
+      console.error("Error loading plants:", err);
+      setPlants([]);
+    }
+  };
+
+  const handlePlantDropdownClick = () => {
+    loadPlants(); // Load plants only when dropdown is clicked
   };
 
   const change = (k, v) => {
@@ -160,6 +176,8 @@ export default function DepartmentForm({ onClose, onSaved, editData }) {
             className={`form-input ${errors.plantId ? 'error' : ''}`}
             value={form.plantId}
             onChange={e => change("plantId", e.target.value)}
+            onClick={handlePlantDropdownClick}
+            onFocus={handlePlantDropdownClick}
           >
             <option value="">Select Plant</option>
             {plants.map(p => (

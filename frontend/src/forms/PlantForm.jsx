@@ -4,13 +4,6 @@ import { useEffect } from "react";
 
 
 export default function PlantForm({ onClose, onSaved, editData }) {
-  useEffect(() => {
-  document.body.style.overflow = "hidden";
-  return () => {
-    document.body.style.overflow = "auto";
-  };
-}, []);
-
   const [form, setForm] = useState({
     plantName: editData?.plantName || "",
     plantCode: editData?.plantCode || "",
@@ -21,6 +14,13 @@ export default function PlantForm({ onClose, onSaved, editData }) {
   const [errors, setErrors] = useState({});
 
   const isEdit = !!editData;
+
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, []);
 
   const change = (k, v) => {
     setForm({ ...form, [k]: v });

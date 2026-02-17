@@ -17,7 +17,17 @@ export default function Sidebar() {
 
       {/* Logout Button */}
       {user && (
-        <div style={{ marginTop: 'auto', paddingTop: '325px' }}>
+        <div style={{ marginTop: 'auto', paddingTop: '300px' }}>
+          <div style={{ 
+            marginBottom: '10px', 
+            padding: '10px',
+            textAlign: 'center',
+            color: '#666',
+            fontSize: '14px',
+            fontWeight: '500'
+          }}>
+            {user?.name}
+          </div>
           <button 
             onClick={logout}
             style={{
@@ -32,7 +42,7 @@ export default function Sidebar() {
               fontWeight: '500'
             }}
           >
-            Logout
+            <i class="fa-solid fa-user"></i> Logout
           </button>
         </div>
       )}

@@ -16,7 +16,7 @@ const ErrorMessage = ({ message, onClose }) => {
       fontSize: '14px',
       fontWeight: '600',
       boxShadow: '0 2px 8px rgba(231, 76, 60, 0.3)',
-      maxWidth: '400px',
+      maxWidth: '600px',
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center'

@@ -79,25 +79,6 @@
   cursor: not-allowed;
 }
 
-.auth-form .error-message {
-  color: #e74c3c;
-  background: #fdf2f2;
-  border: 1px solid #f5c6cb;
-  border-radius: 4px;
-  padding: 12px;
-  margin-bottom: 16px;
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 0.5;
-}
-
-.auth-form .field-error {
-  color: #e74c3c;
-  font-size: 12px;
-  margin-top: 4px;
-  font-weight: 500;
-}
-
 .auth-switch {
   text-align: center;
   margin-top: 20px;

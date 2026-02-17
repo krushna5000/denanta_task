@@ -7,6 +7,7 @@ export default function WorkCenterForm({ onClose, onSaved, editData }) {
   const [plants, setPlants] = useState([]);
   const [departments, setDepartments] = useState([]);
   const [costCenters, setCostCenters] = useState([]);
+  const [plantsLoaded, setPlantsLoaded] = useState(false);
   const [errors, setErrors] = useState({});
 
   const [form, setForm] = useState({
@@ -63,51 +64,18 @@ export default function WorkCenterForm({ onClose, onSaved, editData }) {
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
-    
-    // Only load plants if not in edit mode
-    if (!isEdit) {
-      loadPlants();
-    } else if (editData?.plant) {
-      // In edit mode, set plants directly from editData
-      setPlants([editData.plant]);
-    }
-
     return () => {
       document.body.style.overflow = "auto";
     };
-  }, [isEdit, editData]);
-
-  // For Edit Mode Only
-  useEffect(() => {
-    if (editData) {
-      if (!isEdit) {
-        // Only load departments if not in edit mode
-        if (editData.plantId) {
-          loadDepartments(editData.plantId);
-        }
-      } else if (editData?.department) {
-        // In edit mode, set departments directly from editData
-        setDepartments([editData.department]);
-      }
-      
-      if (!isEdit) {
-        // Only load cost centers if not in edit mode
-        if (editData.depId) {
-          loadCostCenters(editData.depId);
-        }
-      } else if (editData?.costCenter) {
-        // In edit mode, set cost centers directly from editData
-        setCostCenters([editData.costCenter]);
-      }
-    }
-  }, [editData, isEdit]);
-
-  //  API CALLS 
+  }, []);
 
   const loadPlants = async () => {
+    if (plantsLoaded) return; // Don't reload if already loaded
+    
     try {
       const res = await API.get("/plants");
       setPlants(res.data.data || []);
+      setPlantsLoaded(true);
     } catch (err) {
       console.error("Error loading plants:", err);
       setPlants([]);
@@ -134,29 +102,38 @@ export default function WorkCenterForm({ onClose, onSaved, editData }) {
     }
   };
 
-  //  HANDLERS 
+  const handlePlantDropdownClick = () => {
+    loadPlants(); // Load plants only when dropdown is clicked
+  };
 
-  const onPlantChange = (value) => {
-    change("plantId", value);
-    change("depId", "");
-    change("costCenterId", "");
-    setDepartments([]);
-    setCostCenters([]);
-
-    if (value) {
-      loadDepartments(value);
+  const handlePlantChange = (plantId) => {
+    change("plantId", plantId);
+    change("depId", ""); // Clear department when plant changes
+    change("costCenterId", ""); // Clear cost center when plant changes
+    setDepartments([]); // Clear departments list
+    setCostCenters([]); // Clear cost centers list
+    
+    if (plantId) {
+      loadDepartments(plantId); // Load departments for selected plant
     }
   };
 
-  const onDepChange = (value) => {
-    change("depId", value);
-    change("costCenterId", "");
-    setCostCenters([]);
+  const handleDepChange = (depId) => {
+    change("depId", depId);
+    change("costCenterId", ""); // Clear cost center when department changes
+    setCostCenters([]); // Clear cost centers list
 
-    if (value) {
-      loadCostCenters(value);
+    if (depId) {
+      loadCostCenters(depId); // Load cost centers for selected department
     }
   };
+
+  // For Edit Mode Only
+  useEffect(() => {
+    if (editData) {
+      // Don't load departments/cost centers automatically - wait for user clicks
+    }
+  }, [editData]);
 
   const submit = async () => {
     if (!validateForm()) {
@@ -254,7 +231,9 @@ export default function WorkCenterForm({ onClose, onSaved, editData }) {
           <select
             className={`form-input ${errors.plantId ? 'error' : ''}`}
             value={form.plantId}
-            onChange={(e) => onPlantChange(e.target.value)}
+            onChange={(e) => handlePlantChange(e.target.value)}
+            onClick={handlePlantDropdownClick}
+            onFocus={handlePlantDropdownClick}
           >
             <option value="">Select Plant</option>
             {plants.map(p => (
@@ -272,7 +251,7 @@ export default function WorkCenterForm({ onClose, onSaved, editData }) {
           <select
             className={`form-input ${errors.depId ? 'error' : ''}`}
             value={form.depId}
-            onChange={(e) => onDepChange(e.target.value)}
+            onChange={(e) => handleDepChange(e.target.value)}
             disabled={!form.plantId}
           >
             <option value="">Select Department</option>

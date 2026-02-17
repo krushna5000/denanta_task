@@ -4,6 +4,7 @@ import API from "../api/api";
 export default function CostCenterForm({ onClose, onSaved, editData }) {
   const [plants, setPlants] = useState([]);
   const [departments, setDepartments] = useState([]);
+  const [plantsLoaded, setPlantsLoaded] = useState(false);
   const [errors, setErrors] = useState({});
 
   const [form, setForm] = useState({
@@ -16,22 +17,49 @@ export default function CostCenterForm({ onClose, onSaved, editData }) {
 
   const isEdit = !!editData;
 
-  //  LOAD PLANTS 
   useEffect(() => {
     document.body.style.overflow = "hidden";
-    
-    // Only load plants if not in edit mode
-    if (!isEdit) {
-      loadPlants();
-    } else if (editData?.plant) {
-      // In edit mode, set plants directly from editData
-      setPlants([editData.plant]);
-    }
-
     return () => {
       document.body.style.overflow = "auto";
     };
-  }, [isEdit, editData]);
+  }, []);
+
+  const loadPlants = async () => {
+    if (plantsLoaded) return; // Don't reload if already loaded
+    
+    try {
+      const res = await API.get("/plants");
+      setPlants(res.data.data || []);
+      setPlantsLoaded(true);
+    } catch (err) {
+      console.error("Error loading plants:", err);
+      setPlants([]);
+    }
+  };
+
+  const loadDepartments = async (plantId) => {
+    try {
+      const res = await API.get(`/departments/by-plant?plantId=${plantId}`);
+      setDepartments(res.data.data || []);
+    } catch (err) {
+      console.error("Error loading departments:", err);
+      setDepartments([]);
+    }
+  };
+
+  const handlePlantDropdownClick = () => {
+    loadPlants(); // Load plants only when dropdown is clicked
+  };
+
+  const handlePlantChange = (plantId) => {
+    change("plantId", plantId);
+    change("depId", ""); // Clear department when plant changes
+    setDepartments([]); // Clear departments list
+    
+    if (plantId) {
+      loadDepartments(plantId); // Load departments for selected plant
+    }
+  };
 
   // ================= SET EDIT DATA =================
   useEffect(() => {
@@ -43,38 +71,9 @@ export default function CostCenterForm({ onClose, onSaved, editData }) {
         costCenterCode: editData.costCenterCode || "",
         description: editData.description || "",
       });
+      // Don't load departments automatically - wait for user to click plant dropdown
     }
   }, [editData]);
-
-  // ================= LOAD ALL DEPARTMENTS =================
-  useEffect(() => {
-    // Only load all departments if not in edit mode
-    if (!isEdit) {
-      loadAllDepartments();
-    } else if (editData?.department) {
-      // In edit mode, set departments directly from editData
-      setDepartments([editData.department]);
-    }
-  }, [isEdit, editData]);
-
-  const loadPlants = async () => {
-    try {
-      const res = await API.get("/plants");
-      setPlants(res.data.data || []);
-    } catch (err) {
-      console.error("Error loading plants:", err);
-    }
-  };
-
-  const loadAllDepartments = async () => {
-    try {
-      const res = await API.get("/departments");
-      setDepartments(res.data.data || []);
-    } catch (err) {
-      console.error("Error loading departments:", err);
-      setDepartments([]);
-    }
-  };
 
   const change = (key, value) => {
     setForm((prev) => ({
@@ -206,7 +205,9 @@ export default function CostCenterForm({ onClose, onSaved, editData }) {
           <select
             className={`form-input ${errors.plantId ? 'error' : ''}`}
             value={form.plantId}
-            onChange={(e) => change("plantId", e.target.value)}
+            onChange={(e) => handlePlantChange(e.target.value)}
+            onClick={handlePlantDropdownClick}
+            onFocus={handlePlantDropdownClick}
           >
             <option value="">Select Plant</option>
             {plants.map((p) => (
@@ -225,11 +226,12 @@ export default function CostCenterForm({ onClose, onSaved, editData }) {
             className={`form-input ${errors.depId ? 'error' : ''}`}
             value={form.depId}
             onChange={(e) => change("depId", e.target.value)}
+            disabled={!form.plantId}
           >
             <option value="">Select Department</option>
             {departments.map((d) => (
               <option key={d.id} value={d.id.toString()}>
-                {d.depName} {d.plant ? `(${d.plant.plantName})` : ''}
+                {d.depName}
               </option>
             ))}
           </select>
