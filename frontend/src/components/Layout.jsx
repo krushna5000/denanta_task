@@ -23,20 +23,6 @@ export default function Layout({ children, title }) {
             <span style={{ fontSize: '14px', color: '#666' }}>
               Welcome, {user?.name}
             </span>
-            <button 
-              onClick={logout}
-              style={{
-                padding: '8px 16px',
-                backgroundColor: '#dc3545',
-                color: 'white',
-                border: 'none',
-                borderRadius: '4px',
-                cursor: 'pointer',
-                fontSize: '14px'
-              }}
-            >
-              Logout
-            </button>
           </div>
         </div>
 
