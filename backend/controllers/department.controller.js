@@ -5,6 +5,12 @@ export const createDepartment = async (req, res) => {
     const data = await departmentService.createDepartment(req.body);
     res.status(201).json({ success: true, data });
   } catch (err) {
+    if (err.message === "Department code already exists") {
+      return res.status(409).json({ 
+        success: false, 
+        message: "Department code already exists" 
+      });
+    }
     res.status(400).json({ success: false, message: err.message });
   }
 };
@@ -33,12 +39,21 @@ export const getDepartmentById = async (req, res) => {
 };
 
 export const updateDepartment = async (req, res) => {
-  const data = await departmentService.updateDepartment(
-    Number(req.params.id),
-    req.body
-  );
-
-  res.json({ success: true, data });
+  try {
+    const data = await departmentService.updateDepartment(
+      Number(req.params.id),
+      req.body
+    );
+    res.json({ success: true, data });
+  } catch (err) {
+    if (err.message === "Department code already exists") {
+      return res.status(409).json({ 
+        success: false, 
+        message: "Department code already exists" 
+      });
+    }
+    res.status(400).json({ success: false, message: err.message });
+  }
 };
 
 export const deleteDepartment = async (req, res) => {

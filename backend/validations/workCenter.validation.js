@@ -30,13 +30,13 @@ export const validateWorkCenter = (req, res, next) => {
     errors.push({ field: 'workName', message: 'Work Center Name must be at least 2 characters' });
   }
 
-  // Validate workCode (optional field)
-  if (workCode) {
-    if (workCode.trim().length < 2) {
-      errors.push({ field: 'workCode', message: 'Work Code must be at least 2 characters' });
-    } else if (!/^[A-Za-z0-9-_]+$/.test(workCode.trim())) {
-      errors.push({ field: 'workCode', message: 'Work Code can only contain letters, numbers, hyphens and underscores' });
-    }
+  // Validate workCode (mandatory field)
+  if (!workCode || workCode.trim() === "") {
+    errors.push({ field: 'workCode', message: 'Work Center Code is required' });
+  } else if (workCode.trim().length < 2) {
+    errors.push({ field: 'workCode', message: 'Work Center Code must be at least 2 characters' });
+  } else if (!/^[A-Za-z0-9-_]+$/.test(workCode.trim())) {
+    errors.push({ field: 'workCode', message: 'Work Center Code can only contain letters, numbers, hyphens and underscores' });
   }
 
   if (errors.length > 0) {

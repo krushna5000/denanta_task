@@ -7,6 +7,14 @@ export const createWorkCenter = async (req, res) => {
   } catch (err) {
     console.error('Work center creation error:', err);
     
+    // Handle duplicate code error from factory layer
+    if (err.message === "Work Center code already exists") {
+      return res.status(409).json({ 
+        success: false, 
+        message: "Work Center code already exists" 
+      });
+    }
+    
     // Handle specific database errors
     if (err.code === '23505') {
       // Unique constraint violation
@@ -51,7 +59,7 @@ export const createWorkCenter = async (req, res) => {
     // Generic error
     res.status(400).json({ 
       success: false, 
-      message: 'Word center code Allready exist.' 
+      message: 'Failed to create work center. Please check your data and try again.' 
     });
   }
 };
@@ -80,12 +88,21 @@ export const getWorkCenterById = async (req, res) => {
 };
 
 export const updateWorkCenter = async (req, res) => {
-  const data = await workCenterService.updateWorkCenter(
-    Number(req.params.id),
-    req.body
-  );
-
-  res.json({ success: true, data });
+  try {
+    const data = await workCenterService.updateWorkCenter(
+      Number(req.params.id),
+      req.body
+    );
+    res.json({ success: true, data });
+  } catch (err) {
+    if (err.message === "Work Center code already exists") {
+      return res.status(409).json({ 
+        success: false, 
+        message: "Work Center code already exists" 
+      });
+    }
+    res.status(400).json({ success: false, message: err.message });
+  }
 };
 
 export const deleteWorkCenter = async (req, res) => {

@@ -52,11 +52,31 @@ export const getDepartmentById = async (id) => {
 
 
 export const createDepartment = async (data) => {
+  // Check for duplicate department code
+  const existingDept = await db.query.department.findFirst({
+    where: eq(department.depCode, data.depCode)
+  });
+  
+  if (existingDept) {
+    throw new Error("Department code already exists");
+  }
+  
   return db.insert(department).values(data).returning();
 };
 
 
 export const updateDepartment = async (id, data) => {
+  // If updating department code, check for duplicates (excluding current department)
+  if (data.depCode) {
+    const existingDept = await db.query.department.findFirst({
+      where: eq(department.depCode, data.depCode)
+    });
+    
+    if (existingDept && existingDept.id !== id) {
+      throw new Error("Department code already exists");
+    }
+  }
+  
   return db
     .update(department)
     .set(data)

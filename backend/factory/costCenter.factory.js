@@ -54,11 +54,31 @@ export const getCostCenterById = async (id) => {
 
 
 export const createCostCenter = async (data) => {
+  // Check for duplicate cost center code
+  const existingCostCenter = await db.query.costCenter.findFirst({
+    where: eq(costCenter.costCenterCode, data.costCenterCode)
+  });
+  
+  if (existingCostCenter) {
+    throw new Error("Cost Center code already exists");
+  }
+  
   return db.insert(costCenter).values(data).returning();
 };
 
 
 export const updateCostCenter = async (id, data) => {
+  // If updating cost center code, check for duplicates (excluding current cost center)
+  if (data.costCenterCode) {
+    const existingCostCenter = await db.query.costCenter.findFirst({
+      where: eq(costCenter.costCenterCode, data.costCenterCode)
+    });
+    
+    if (existingCostCenter && existingCostCenter.id !== id) {
+      throw new Error("Cost Center code already exists");
+    }
+  }
+  
   return db
     .update(costCenter)
     .set(data)

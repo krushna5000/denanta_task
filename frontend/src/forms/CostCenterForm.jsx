@@ -110,9 +110,11 @@ export default function CostCenterForm({ onClose, onSaved, editData }) {
       newErrors.costCenterName = "Cost Center Name must be at least 2 characters";
     }
 
-    if (form.costCenterCode && form.costCenterCode.trim().length < 2) {
+    if (!form.costCenterCode.trim()) {
+      newErrors.costCenterCode = "Cost Center Code is required";
+    } else if (form.costCenterCode.trim().length < 2) {
       newErrors.costCenterCode = "Cost Center Code must be at least 2 characters";
-    } else if (form.costCenterCode && !/^[A-Za-z0-9-_]+$/.test(form.costCenterCode.trim())) {
+    } else if (!/^[A-Za-z0-9-_]+$/.test(form.costCenterCode.trim())) {
       newErrors.costCenterCode = "Cost Center Code can only contain letters, numbers, hyphens and underscores";
     }
 
@@ -278,7 +280,7 @@ export default function CostCenterForm({ onClose, onSaved, editData }) {
 
         {/* Code */}
         <div className="form-group">
-          <label>Cost Center Code</label>
+          <label>Cost Center Code *</label>
           <input
             className={`form-input ${errors.costCenterCode ? 'error' : ''}`}
             value={form.costCenterCode}

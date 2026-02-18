@@ -78,9 +78,11 @@ export default function DepartmentForm({ onClose, onSaved, editData }) {
       newErrors.depName = "Department Name must be at least 2 characters";
     }
 
-    if (form.depCode && form.depCode.trim().length < 2) {
+    if (!form.depCode.trim()) {
+      newErrors.depCode = "Department Code is required";
+    } else if (form.depCode.trim().length < 2) {
       newErrors.depCode = "Department Code must be at least 2 characters";
-    } else if (form.depCode && !/^[A-Za-z0-9-_]+$/.test(form.depCode.trim())) {
+    } else if (!/^[A-Za-z0-9-_]+$/.test(form.depCode.trim())) {
       newErrors.depCode = "Department Code can only contain letters, numbers, hyphens and underscores";
     }
 
@@ -213,7 +215,7 @@ export default function DepartmentForm({ onClose, onSaved, editData }) {
         </div>
 
         <div className="form-group">
-          <label>Department Code</label>
+          <label>Department Code *</label>
           <input
             className={`form-input ${errors.depCode ? 'error' : ''}`}
             placeholder="Enter Department Code"

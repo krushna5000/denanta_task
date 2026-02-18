@@ -23,13 +23,13 @@ export const validateCostCenter = (req, res, next) => {
     errors.push({ field: 'costCenterName', message: 'Cost Center Name must be at least 2 characters' });
   }
 
-  // Validate costCenterCode (optional field)
-  if (costCenterCode) {
-    if (costCenterCode.trim().length < 2) {
-      errors.push({ field: 'costCenterCode', message: 'Cost Center Code must be at least 2 characters' });
-    } else if (!/^[A-Za-z0-9-_]+$/.test(costCenterCode.trim())) {
-      errors.push({ field: 'costCenterCode', message: 'Cost Center Code can only contain letters, numbers, hyphens and underscores' });
-    }
+  // Validate costCenterCode (mandatory field)
+  if (!costCenterCode || costCenterCode.trim() === "") {
+    errors.push({ field: 'costCenterCode', message: 'Cost Center Code is required' });
+  } else if (costCenterCode.trim().length < 2) {
+    errors.push({ field: 'costCenterCode', message: 'Cost Center Code must be at least 2 characters' });
+  } else if (!/^[A-Za-z0-9-_]+$/.test(costCenterCode.trim())) {
+    errors.push({ field: 'costCenterCode', message: 'Cost Center Code can only contain letters, numbers, hyphens and underscores' });
   }
 
   if (errors.length > 0) {

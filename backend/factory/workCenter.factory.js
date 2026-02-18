@@ -54,11 +54,31 @@ export const getWorkCenterById = async (id) => {
   });
 };
 export const createWorkCenter = async (data) => {
+  // Check for duplicate work center code
+  const existingWorkCenter = await db.query.workCenter.findFirst({
+    where: eq(workCenter.workCode, data.workCode)
+  });
+  
+  if (existingWorkCenter) {
+    throw new Error("Work Center code already exists");
+  }
+  
   return db.insert(workCenter).values(data).returning();
 };
 
 
 export const updateWorkCenter = async (id, data) => {
+  // If updating work center code, check for duplicates (excluding current work center)
+  if (data.workCode) {
+    const existingWorkCenter = await db.query.workCenter.findFirst({
+      where: eq(workCenter.workCode, data.workCode)
+    });
+    
+    if (existingWorkCenter && existingWorkCenter.id !== id) {
+      throw new Error("Work Center code already exists");
+    }
+  }
+  
   return db
     .update(workCenter)
     .set(data)

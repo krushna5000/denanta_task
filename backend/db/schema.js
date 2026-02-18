@@ -17,7 +17,7 @@ export const plant = pgTable('plant', {
   id: serial('id').primaryKey(),
   plantName: varchar('plant_name').notNull(),
   plantLocation: varchar('plant_location'),
-  plantCode: varchar('plant_code').unique(),
+  plantCode: varchar('plant_code').unique().notNull(),
   description: text('description'),
 });
 
@@ -26,7 +26,7 @@ export const department = pgTable('department', {
   id: serial('id').primaryKey(),
   plantId: integer('plant_id').references(() => plant.id, { onDelete: 'cascade' }),
   depName: varchar('dep_name', { length: 255 }).notNull(),
-  depCode: varchar('dep_code', { length: 255 }).unique(),
+  depCode: varchar('dep_code', { length: 255 }).unique().notNull(),
   depDescription: text('dep_description'),
 });
 
@@ -35,8 +35,8 @@ export const costCenter = pgTable('cost_center', {
   id: serial('id').primaryKey(),
   plantId: integer('plant_id').references(() => plant.id, { onDelete: 'cascade' }),
   depId: integer('dep_id').references(() => department.id, { onDelete: 'cascade' }),
-  costCenterName: varchar('cost_center_name', { length: 255 }).notNull(),
-  costCenterCode: varchar('cost_center_code', { length: 255 }).unique(),
+  costCenterName: varchar('cost_center_name', { length: 255 }).notNull().notNull(),
+  costCenterCode: varchar('cost_center_code', { length: 255 }).unique().notNull(),
   description: text('description'),
 });
 
@@ -47,7 +47,7 @@ export const workCenter = pgTable('work_center', {
   depId: integer('dep_id').references(() => department.id),
   costCenterId: integer('cost_center_id').references(() => costCenter.id),
   workName: varchar('work_name', { length: 255 }).notNull(),
-  workCode: varchar('work_code', { length: 255 }).unique(),
+  workCode: varchar('work_code', { length: 255 }).unique().notNull()  ,
   workDescription: text('work_description'),
 });
 

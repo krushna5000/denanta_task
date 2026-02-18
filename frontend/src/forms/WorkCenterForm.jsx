@@ -50,9 +50,11 @@ export default function WorkCenterForm({ onClose, onSaved, editData }) {
       newErrors.workName = "Work Center Name must be at least 2 characters";
     }
 
-    if (form.workCode && form.workCode.trim().length < 2) {
+    if (!form.workCode.trim()) {
+      newErrors.workCode = "Work Center Code is required";
+    } else if (form.workCode.trim().length < 2) {
       newErrors.workCode = "Work Code must be at least 2 characters";
-    } else if (form.workCode && !/^[A-Za-z0-9-_]+$/.test(form.workCode.trim())) {
+    } else if (!/^[A-Za-z0-9-_]+$/.test(form.workCode.trim())) {
       newErrors.workCode = "Work Code can only contain letters, numbers, hyphens and underscores";
     }
 
@@ -344,7 +346,7 @@ export default function WorkCenterForm({ onClose, onSaved, editData }) {
 
         {/* WORK CODE */}
         <div className="form-group">
-          <label>Work Code</label>
+          <label>Work Code *</label>
           <input
             className={`form-input ${errors.workCode ? 'error' : ''}`}
             placeholder="Enter Work Code"
